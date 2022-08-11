@@ -971,7 +971,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
             $group->pb_group_id = '';
         }
 
-        $group->custom_params = $custom_params;
+        $group->customParams = $custom_params;
         //the customs that consists the stockable
         $custom_ids = !empty($custom_params['custom_id']) ? $custom_params['custom_id'] : array();
         $layout = 'default';
