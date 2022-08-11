@@ -29,7 +29,9 @@ if(!empty($options)){?>
     <?php 
     foreach ($options as $key=>$v) {
         $selected='';
-        if(!empty($v->selected))$selected='selected="selected"'?>
+        if(!empty($v->selected)) {
+            $selected='selected="selected"';
+        }?>
         <option value="<?php echo $v->id?>" <?php echo $selected;?>><?php echo JText::_($v->value)?></option>
         <?php 
     }?>
