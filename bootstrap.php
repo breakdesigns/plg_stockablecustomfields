@@ -1,4 +1,12 @@
 <?php
+/**
+ * @package stockablecustomfield
+ * @copyright Copyright (C) 2014-2022 breakdesigns.net . All rights reserved.
+ * @license GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('_JEXEC') or die('Restricted access');
+
 if(!class_exists('VmConfig')) {
     require(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_virtuemart'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'config.php');
 }
