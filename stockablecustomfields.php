@@ -306,7 +306,9 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
                 $retValue = '';
                 PluginHelper::importPlugin('vmcustom');
                 Factory::getApplication()->triggerEvent('plgVmOnStockableDisplayBE', array($subcustomfield, $derived_product->virtuemart_product_id, &$inner_row, &$retValue, $input_pefix));
-                if (!empty($retValue)) $html .= '<td>' . $retValue . '</td>';
+                if (!empty($retValue)) {
+                    $html .= '<td>' . $retValue . '</td>';
+                }
             }
             $html .= '</tr>';
             $i++;
@@ -329,8 +331,12 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
 	           <tr>
 	               <td style="width:90px; height:100px; background:#ffffff;">';
     		        //image
-    		        if(!empty($derived_product->images[0]))$html.=$derived_product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
-    		        else $html.=$this->getImageLoaderMarkup($row);
+    		        if(!empty($derived_product->images[0])) {
+    		            $html.=$derived_product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
+                    }
+    		        else {
+    		            $html.=$this->getImageLoaderMarkup($row);
+                    }
 
 			        $html.=
 			        '</td>
@@ -826,13 +832,12 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
                     $data->file_lang = '';
                     $data->created_on=$now->toSql();
 
-                    Table::addIncludePath(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_virtuemart'.DIRECTORY_SEPARATOR.'tables');
+                    Table::addIncludePath(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_virtuemart' . DIRECTORY_SEPARATOR . 'tables');
                     //create the media db record
                     $table = Table::getInstance('medias', 'Table');
-                    //$table->bind($media);
                     $table->bindChecknStore($data);
-                    $media_id=$table->virtuemart_media_id;
-                    \vmdebug('media id:',$media_id);
+                    $media_id = $table->virtuemart_media_id;
+                    \vmdebug('media id:', $media_id);
 
                     //create the record to the product_medias db table
                     if(!empty($media_id)){
