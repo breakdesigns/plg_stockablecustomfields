@@ -1,13 +1,15 @@
 <?php
 /**
- * @version		$Id: prices.php 2014-04-24 19:12 sakis Terz $
- * @package		productbundles
- * @copyright	Copyright (C)2014 breakdesigns.net . All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package stockablecustomfield
+ * @copyright Copyright (C) 2014-2022 breakdesigns.net . All rights reserved.
+ * @license GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die('Restricted access');
-if(!class_exists('BundleCustomfield'))require_once(JPATH_PLUGINS.DIRECTORY_SEPARATOR.'vmcustom'.DIRECTORY_SEPARATOR.'productbundles'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'customfield.php');
+
+if(!class_exists('BundleCustomfield')) {
+    require_once(JPATH_PLUGINS.DIRECTORY_SEPARATOR.'vmcustom'.DIRECTORY_SEPARATOR.'productbundles'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'customfield.php');
+}
 
 /**
  *
@@ -18,8 +20,12 @@ if(!class_exists('BundleCustomfield'))require_once(JPATH_PLUGINS.DIRECTORY_SEPAR
 Class JElementPrices extends JElement{
 	function fetchElement($fieldname='', $selected='', &$node='', $control_name='')
 	{	
-		if($selected=='')$selected=array('salesPrice');
-		if(!is_array($selected))(array)$selected;
+		if($selected=='') {
+		    $selected=array('salesPrice');
+        }
+		if(!is_array($selected)) {
+		    (array)$selected;
+        }
 		$price_types=array(
 		'COM_VIRTUEMART_PRODUCT_BASEPRICE'=>'basePrice',
 		'COM_VIRTUEMART_PRODUCT_BASEPRICE_WITHTAX'=>'basePriceWithTax',
@@ -34,7 +40,9 @@ Class JElementPrices extends JElement{
 		<?php 
 		foreach ($price_types as $key=>$value){
 			$checked='';
-			if(in_array($value, $selected))$checked='selected';?>
+			if(in_array($value, $selected)) {
+			    $checked='selected';?>
+                }
 					
 			<option value="<?php echo $value?>" <?php echo $checked?>><?php echo JText::_($key);?></option>
 							
