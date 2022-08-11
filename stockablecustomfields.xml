@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension version="3.8.0" type="plugin" group="vmcustom" method="upgrade">
+	<name>Stockable Customfields</name>
+	<creationDate>2021-10-04</creationDate>
+	<author>breadkesigns</author>
+	<authorEmail>info@breakdesigns.net</authorEmail>
+	<authorUrl>http://www.breakdesigns.net</authorUrl>
+	<copyright>Copyright(c) 2015-2021 breakdesigns.net</copyright>
+	<license>GNU/GPL v.2</license>
+	<version>1.5.2beta3</version>
+	<description><![CDATA[<h3>Stockables Customfields<i style="font-size:12px"> (v.1.5.2beta3 | 04 October 2021)</i></h3>
+    <span><img src="../plugins/vmcustom/stockablecustomfields/assets/images/logo_stockables.png"/></span>
+    <p style="margin-top:5px; font-size:12px; font-weight:0;">Create stockable variations using custom fields</p>
+    <p><a href="https://breakdesigns.net/extensions/joomla/stockable-custom-fields/documentation" target="_blank">Please check our Manual to see how to proceed further</a>
+    ]]></description>
+
+	<scriptfile>script.php</scriptfile>
+
+	<!-- Update servers -->
+	<updateservers>
+		<server type="extension" priority="1" name="Stockable Customfields">
+			https://cdn.breakdesigns.net/release/stockablecustomfields/update.xml
+		</server>
+	</updateservers>
+
+	<files folder="plugins/stockablecustomfields">
+		<filename plugin="stockablecustomfields">stockablecustomfields.php</filename>
+		<filename>bootstrap.php</filename>
+		<filename>index.html</filename>
+		<folder>assets</folder>
+		<folder>fields</folder>
+		<folder>helpers</folder>
+		<folder>stockablecustomfields</folder>
+	</files>
+
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_vmcustom_stockablecustomfields.ini
+		</language>
+		<language tag="en-GB">en-GB/en-GB.plg_vmcustom_stockablecustomfields.sys.ini
+		</language>
+		<language tag="el-GR">el-GR/el-GR.plg_vmcustom_stockablecustomfields.ini
+		</language>
+		<language tag="cs-CZ">cs-CZ/cs-CZ.plg_vmcustom_stockablecustomfields.ini
+		</language>
+		<language tag="de-DE">de-DE/de-DE.plg_vmcustom_stockablecustomfields.ini
+		</language>
+		<language tag="it-IT">it-IT/it-IT.plg_vmcustom_stockablecustomfields.ini
+		</language>
+		<language tag="nl-NL">nl-NL/nl-NL.plg_vmcustom_stockablecustomfields.ini
+		</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_vmcustom_stockablecustomfields.ini
+		</language>
+		<language tag="sk-SK">sk-SK/sk-SK.plg_vmcustom_stockablecustomfields.ini
+		</language>
+	</languages>
+	<vmconfig>
+		<fields name="params">
+			<fieldset name="basic"
+				addfieldpath="/plugins/vmcustom/stockablecustomfields/fields">
+
+				<field name="parentOrderable" type="radio"
+					label="PLG_STOCKABLECUSTOMFIELDS_PARENT_PRODUCT_ORDERABLE_LABEL"
+					description="PLG_STOCKABLECUSTOMFIELDS_PARENT_PRODUCT_ORDERABLE_DESC"
+					default="0">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+
+				<field name="outofstockcombinations" type="radio"
+					label="PLG_STOCKABLECUSTOMFIELDS_OUT_OF_STOCK_DISPLAY_LABEL"
+					description="PLG_STOCKABLECUSTOMFIELDS_OUT_OF_STOCK_DISPLAY_DESC"
+					default="enabled">
+					<option value="enabled">PLG_STOCKABLECUSTOMFIELD_ENABLED</option>
+					<option value="disabled">PLG_STOCKABLECUSTOMFIELD_DISABLED</option>
+					<option value="hidden">PLG_STOCKABLECUSTOMFIELD_HIDDEN</option>
+				</field>
+
+				<field type="customs" name="custom_id"
+					label="PLG_STOCKABLECUSTOMFIELDS_CUSTOMS_LABEL" description="PLG_STOCKABLECUSTOMFIELDS_CUSTOMS_DESC" />
+
+
+			</fieldset>
+		</fields>
+	</vmconfig>
+
+	<plugins>
+		<plugin plugin="stockablecustomfields" group="vmcustom" />
+	</plugins>
+
+	<templateoverrides>
+		<templateoverride name="override1" client="administrator"></templateoverride>
+		<templateoverride name="override2" client="administrator"></templateoverride>
+	</templateoverrides>
+</extension>
