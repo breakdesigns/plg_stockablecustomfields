@@ -5,9 +5,9 @@
  * @license GNU General Public License version 2 or later; see LICENSE.txt
  */
 
- if (!defined('_JEXEC')) die;
+defined('_JEXEC') or die('Restricted access');
 
- use Joomla\Utilities\ArrayHelper;
+use Joomla\Utilities\ArrayHelper;
  use Joomla\CMS\Factory;
  use Joomla\CMS\Plugin\PluginHelper;
 
