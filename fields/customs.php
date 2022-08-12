@@ -10,11 +10,8 @@ defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Uri\Uri;
-
-HTMLHelper::_('behavior.framework', true);
-HTMLHelper::_('behavior.modal');
+use Joomla\CMS\Toolbar\Button\PopupButton;
 
 if(!class_exists('CustomfieldStockablecustomfield')) {
     require_once(JPATH_PLUGINS.DIRECTORY_SEPARATOR.'vmcustom'.DIRECTORY_SEPARATOR.'stockablecustomfields'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'customfield.php');
@@ -93,15 +90,12 @@ class JFormFieldCustoms extends JFormField{
 
 		//if there are assignments cannot change the custom fields
 		if(empty($isAssignedToProduct)){
+
+		    $popupButton = new PopupButton();
+            $popupButtonHtml = $popupButton->fetchButton('Modal', 'plus', 'PLG_STOCKABLECUSTOMFIELDS_ADD_CUSTOMS_LABEL', 'index.php?option=com_virtuemart&view=custom&layout=stockables&tmpl=component&function=jSelectCustom' , '820', '550');
+
 			$html.='
-			<div class="elements_toolbar">
-				<a class="modal btn" role="modal" data-toggle="modal" title="'.Text::_('PLG_STOCKABLECUSTOMFIELDS_ADD_CUSTOMS_DESC').'"
-				href="index.php?option=com_virtuemart&view=custom&layout=stockables&tmpl=component&function=jSelectCustom"
-				onclick="return false;" rel="{handler: \'iframe\', size: {x: 820, y: 550}}">
-				<i class="bdicon-plus-circled"></i>'.
-			Text::_('PLG_STOCKABLECUSTOMFIELDS_ADD_CUSTOMS_LABEL')
-			.'</a>
-			</div>';
+			<div class="elements_toolbar">' . $popupButtonHtml .'</div>';
 		}else{
             $html .= '<div class="alert alert-info"><span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_CANNOT_CHANGE_CUSTOMS_IF_ASSIGNED') . '</span><div>';
 		}
