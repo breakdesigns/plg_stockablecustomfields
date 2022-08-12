@@ -237,13 +237,15 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
         		      <i class="icon-plus"></i><span>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_NEW_VARIATION').'</span>
         		    </a>
     		    </div>';
-    		$html.='
+
+			$fetchCustomUrl = Uri::root(false).'administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&virtuemart_product_id='.$product_id.'&type=fields&id='.$parent_custom_id;
+    		$js = <<<JS
     		<script type="text/javascript">
     		    //hide all but the last
-    		    jQuery(\'.stcoakbles_add_customfield\').hide();
-    		    jQuery(\'#stcoakbles_add_customfield'.$row.'\').show();
-        		jQuery(\'#stcoakbles_add_customfield'.$row.'\').on(\'click\',function(){
-    		        if(typeof nextCustom !=\'undefined\') {
+    		    jQuery('.stcoakbles_add_customfield').hide();
+    		    jQuery('#stcoakbles_add_customfield{$row}').show();
+        		jQuery('#stcoakbles_add_customfield{$row}').on('click',function(){
+    		        if(typeof nextCustom !='undefined') {
     		              var counter=nextCustom;
     		              nextCustom++
 		              }
@@ -251,15 +253,22 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
                           var counter=Virtuemart.nextCustom;
     		              Virtuemart.nextCustom++;
 		              }
-    		       	jQuery.getJSON(\''.Uri::root(false).'administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&virtuemart_product_id='.$product_id.'&type=fields&id='.$parent_custom_id.'&row=\'+counter,
+    		       	jQuery.getJSON('{$fetchCustomUrl}&row='+counter,
             		function(data) {
             			jQuery.each(data.value, function(index, value){
-            				jQuery(\'#custom_field\').append(value);
-            				jQuery(\'#custom_field\').trigger(\'sortupdate\');
+            			    let customFieldsWrapper = jQuery('#custom_field');
+            			    if(customFieldsWrapper.length == 0) {
+            			        customFieldsWrapper = jQuery('#vmuikit-js-customcf-container .uk-list');
+            			    }
+            			    console.log(customFieldsWrapper);
+            				customFieldsWrapper.append(value);
+            				customFieldsWrapper.trigger('sortupdate');
             			});
             		});
         		 });
-    		 </script>';
+    		 </script>
+JS;
+            $html.= $js;
 		}
 		$retValue=$html;
 		return true;
