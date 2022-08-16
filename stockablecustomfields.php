@@ -238,8 +238,13 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
         		    </a>
     		    </div>';
 
-			$fetchCustomUrl = Uri::root(false).'administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&virtuemart_product_id='.$product_id.'&type=fields&id='.$parent_custom_id;
-    		$js = <<<JS
+			// The new template uses another url to fetch custom fields.
+            $fetchCustomUrl = Uri::root(false) . 'administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&virtuemart_product_id=' . $product_id . '&type=fields&id=' . $parent_custom_id;
+            if(\VmConfig::get('backendTemplate') == 1) {
+                $fetchCustomUrl = Uri::root(false) . 'administrator/index.php?option=com_virtuemart&view=ajax&task=getProductData&format=json&virtuemart_product_id=' . $product_id . '&type=fields&id=' . $parent_custom_id;
+            }
+
+			$js = <<<JS
     		<script type="text/javascript">
     		    //hide all but the last
     		    jQuery('.stcoakbles_add_customfield').hide();
@@ -255,15 +260,26 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
 		              }
     		       	jQuery.getJSON('{$fetchCustomUrl}&row='+counter,
             		function(data) {
-            			jQuery.each(data.value, function(index, value){
-            			    let customFieldsWrapper = jQuery('#custom_field');
-            			    if(customFieldsWrapper.length == 0) {
-            			        customFieldsWrapper = jQuery('#vmuikit-js-customcf-container .uk-list');
-            			    }
-            			    console.log(customFieldsWrapper);
-            				customFieldsWrapper.append(value);
-            				customFieldsWrapper.trigger('sortupdate');
-            			});
+    		       	    let customFieldsWrapper = jQuery('#custom_field');
+    		       	    // new template wrapper
+    		       	    if(customFieldsWrapper.length == 0) {
+                            customFieldsWrapper = jQuery('#vmuikit-js-customcf-container');
+    		       	    }
+    		       	    let output;
+    		       	    if(data.value) {
+                            jQuery.each(data.value, function(index, value){                                
+                                output = value;                                
+                            });
+    		       	    } else if(typeof Mustache !== 'undefined') { 
+    		       	        // It is the new template                           
+                            let template = jQuery('#vmuikit-js-customcf-template').html();
+                            output = Mustache.render(template, {"customcfs": data });                            
+    		       	    }
+    		       	    
+    		       	    if(output) {
+    		       	        customFieldsWrapper.append(output);
+    		       	        customFieldsWrapper.trigger('sortupdate');
+    		       	    }
             		});
         		 });
     		 </script>
