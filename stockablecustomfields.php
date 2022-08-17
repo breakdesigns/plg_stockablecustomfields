@@ -654,7 +654,7 @@ JS;
                 $input = Factory::getApplication()->input;
                 $files = $input->files->get('derived_product_img');
                 $file = $files[$row];
-                if (!empty($file)) {
+                if (!empty($file) && !empty($file['name'])) {
                     $this->_createMediaFile($file, $derived_product_id);
                 }
             }
@@ -916,7 +916,7 @@ JS;
     public function setPriceDisplay(&$product)
     {
         $product->product_price_display='';
-        if(empty($product->allPrices[$product->selectedPrice]['product_price'])) {
+        if(!isset($product->selectedPrice) || empty($product->allPrices[$product->selectedPrice]['product_price'])) {
             return;
         }
         $vendor_model = \VmModel::getModel('vendor');
