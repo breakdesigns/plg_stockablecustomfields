@@ -19,6 +19,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Language\Multilanguage;
+use Joomla\CMS\Toolbar\Button\PopupButton;
 
 
 /**
@@ -100,22 +101,22 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
      * @return bool
      * @since 1.0
      */
-	public function plgVmGetTablePluginParams($psType, $name, $id, &$xParams, &$varsToPush)
-	{
-		return $this->getTablePluginParams($psType, $name, $id, $xParams, $varsToPush);
-	}
+    public function plgVmGetTablePluginParams($psType, $name, $id, &$xParams, &$varsToPush)
+    {
+        return $this->getTablePluginParams($psType, $name, $id, $xParams, $varsToPush);
+    }
 
-	/**
-	 * Exec when a cf is created/updated (stored) - Customfield view
-	 *
-	 * @param string $psType
-	 * @param array  $data All the data of that cf
+    /**
+     * Exec when a cf is created/updated (stored) - Customfield view
+     *
+     * @param string $psType
+     * @param array  $data All the data of that cf
      * @since 1.0
-	 */
-	public function plgVmOnStoreInstallPluginTable($psType,$data)
-	{
-		\vmdebug('data:',$data);
-	}
+     */
+    public function plgVmOnStoreInstallPluginTable($psType,$data)
+    {
+        \vmdebug('data:',$data);
+    }
 
     /**
      * Displays the custom field in the product view of the backend
@@ -180,6 +181,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
         $custom_ids = $custom_params['custom_id'];
 
         if (!empty($custom_ids) && is_array($custom_ids)) {
+            Factory::getDocument()->addScript(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/js/product_backend.js');
 
             //print the variation markup
             $html .= '<h4>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_VARIATION') . '</h4>';
@@ -210,41 +212,41 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
                 }
             }
 
-			/* No derived product - parent product orderable*/
-			else{
-			    $html.='<h4>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_DERIVED_PRODUCT').'</h4>';
+            /* No derived product - parent product orderable*/
+            else{
+                $html.='<h4>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_DERIVED_PRODUCT').'</h4>';
 
-				//if the parent product is orderable, it can be a variant as well
-				if($custom_params['parentOrderable']){
-					$html.='
+                //if the parent product is orderable, it can be a variant as well
+                if($custom_params['parentOrderable']){
+                    $html.='
 					<div class="controls" id="parent_derived_wrapper'.$row.'">
 					   <input type="checkbox" id="use_parent_'.$row.'" onclick="if(jQuery(this).attr(\'checked\')==\'checked\' && (typeof parent_derived==\'undefined\' || parent_derived==false)){jQuery(\'#derived_product_wrapper_'.$row.'\').hide(); parent_derived=true;} else{jQuery(\'#derived_product_wrapper_'.$row.'\').show(); parent_derived=false;}"
 					   name="'.$this->_product_paramName.'['.$row.'][parent_product_as_derived]" value="1"/>
 					   <label for="use_parent_'.$row.'">'.Text::_('PLG_STOCKABLECUSTOMFIELDS_USE_PARENT').'</label>
 					</div>';
-					$html.='<script>if(typeof parent_derived!="undefined" && parent_derived==true)jQuery("#parent_derived_wrapper'.$row.'").hide();</script>';
-				}
+                    $html.='<script>if(typeof parent_derived!="undefined" && parent_derived==true)jQuery("#parent_derived_wrapper'.$row.'").hide();</script>';
+                }
 
-				//Print a form to create
-				$html.=$this->getDerivedProductFormMarkup($row, $product, $field);
+                //Print a form to create
+                $html.=$this->getDerivedProductFormMarkup($row, $product, $field);
 
-			}
+            }
 
-    		//add toolbar at the end (adding a new variation)
-    		$html.='
+            //add toolbar at the end (adding a new variation)
+            $html.='
     		    <div class="btn-toolbar">
         		    <a class="btn stcoakbles_add_customfield" id="stcoakbles_add_customfield'.$row.'" onclick="return false;">
         		      <i class="icon-plus"></i><span>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_NEW_VARIATION').'</span>
         		    </a>
     		    </div>';
 
-			// The new template uses another url to fetch custom fields.
+            // The new template uses another url to fetch custom fields.
             $fetchCustomUrl = Uri::root(false) . 'administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&virtuemart_product_id=' . $product_id . '&type=fields&id=' . $parent_custom_id;
             if(\VmConfig::get('backendTemplate') == 1) {
                 $fetchCustomUrl = Uri::root(false) . 'administrator/index.php?option=com_virtuemart&view=ajax&task=getProductData&format=json&virtuemart_product_id=' . $product_id . '&type=fields&id=' . $parent_custom_id;
             }
 
-			$js = <<<JS
+            $js = <<<JS
     		<script type="text/javascript">
     		    //hide all but the last
     		    jQuery('.stcoakbles_add_customfield').hide();
@@ -285,10 +287,10 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
     		 </script>
 JS;
             $html.= $js;
-		}
-		$retValue=$html;
-		return true;
-	}
+        }
+        $retValue=$html;
+        return true;
+    }
 
     /**
      * Generates and return the markup related with the variation
@@ -349,22 +351,22 @@ JS;
      * @return string
      * @since  1.4.1
      */
-	public function getDerivedProductMarkup($row,$derived_product)
-	{
-	    $html='
+    public function getDerivedProductMarkup($row,$derived_product)
+    {
+        $html='
 	        <table class="table table-bordered" style="width:100%; min-width:450px;">
 	           <tr>
 	               <td style="width:90px; height:100px; background:#ffffff;">';
-    		        //image
-    		        if(!empty($derived_product->images[0])) {
-    		            $html.=$derived_product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
-                    }
-    		        else {
-    		            $html.=$this->getImageLoaderMarkup($row);
-                    }
+        //image
+        if(!empty($derived_product->images[0])) {
+            $html.=$derived_product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
+        }
+        else {
+            $html.=$this->getImageLoaderMarkup($row);
+        }
 
-			        $html.=
-			        '</td>
+        $html.=
+            '</td>
 			        <td>
 				        <table>
     				        <thead>
@@ -382,16 +384,16 @@ JS;
             				        <td>'.$derived_product->product_price_display.'</td>
             				        <td>
             				        <a class="btn" target="_blank" href="'.Route::_('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$derived_product->virtuemart_product_id).'">'.
-                    					Text::_('JACTION_EDIT').
-                    				'</td>
+            Text::_('JACTION_EDIT').
+            '</td>
                 				</tr>
             				</tbody>
         				</table>
         	        </td>
                </tr>
            </table>';
-		return $html;
-	}
+        return $html;
+    }
 
     /**
      * Generates and return the markup for creating new products
@@ -402,34 +404,38 @@ JS;
      * @return string
      * @since  1.4.1
      */
-	public function getDerivedProductFormMarkup($row, $product, $field)
-	{
-	    $loadProductsURL = 'index.php?option=com_virtuemart&view=product&custom_id='.$field->virtuemart_custom_id.'&row='.$row.'&product_id='.$product->virtuemart_product_id.'&layout=simple2&tmpl=component&function=jSelectProduct';
+    public function getDerivedProductFormMarkup($row, $product, $field)
+    {
+        $loadProductsURL = 'index.php?option=com_virtuemart&view=product&custom_id='.$field->virtuemart_custom_id.'&row='.$row.'&product_id='.$product->virtuemart_product_id.'&layout=simple2&tmpl=component&function=jSelectProduct';
+        $popupButton = new PopupButton();
+        $modal_id = 'productsModal' . $row;
+        $modal_width = 850;
+        $modal_height = 550;
+        $popupButtonHtml = $popupButton->fetchButton('Modal', $modal_id, 'PLG_STOCKABLECUSTOMFIELDS_SELECT_EXISTING',
+            $loadProductsURL, $modal_width, $modal_height);
+        // Replace the icon (non-existent) with the one we want
+        $popupButtonHtml = str_replace('icon-' . $modal_id, 'icon-briefcase', $popupButtonHtml);
 
-	    $html='
-                <div id="derived_product_wrapper_'.$row.'">
+        $html = '
+                <div id="derived_product_wrapper_' . $row . '">
                     <div class="btn-toolbar">
-                       <div class="btn-group">
-                           <a class="btn btn-success" id="stcoakbles_createnew_'.$row.'" href="#" onclick="return false;"><i class="icon-plus"></i><span>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_CREATE_NEW').'</span></a>
-                           <a class="btn modal" id="stcoakbles_loadproduct_'.$row.'"
-                            href="'.$loadProductsURL.'"
-                                rel="{handler: \'iframe\', size: {x: 850, y: 550}}"
-                            ><i class="icon-briefcase"></i><span>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_SELECT_EXISTING').'</span></a>
+                       <div class="btn-group btn-group_stockable_product">
+                           <button class="btn btn-small btn-success" id="stcoakbles_createnew_' . $row . '" type="button">
+                            <i class="icon-plus"></i><span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_CREATE_NEW') . '</span>
+                           </button>
+                            ' . $popupButtonHtml . '
                        </div>
                     </div>';
 
-	    $html.='<script type="text/javascript">
-    				    if(typeof SqueezeBox.initialize =="function") {
-    				        SqueezeBox.initialize({});
-    					    SqueezeBox.assign($$(\'a.modal\'), {
-    						parse: \'rel\'
-    					    });
-    					}
-
+        $html.='<script type="text/javascript">
+                         if(typeof initIframeModal == "function") {
+                            initIframeModal(\'modal-' . $modal_id .'\', \'' . $loadProductsURL .'\', ' . $modal_width . ',' . $modal_height . ');               
+                         }                        
+                        
     					// Load existing
-    				    jQuery(\'#stcoakbles_loadproduct_'.$row.'\').on("click",function(e){
+    				    document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\').addEventListener("click", function(e){
     				        e.preventDefault();
-    				        if(typeof SqueezeBox.initialize !="function") {
+    				        if(typeof initIframeModal !="function") {
     				            alert("You need to save the product with a stockable variation, to use that feature");
     				            return false;
     				        }
@@ -441,11 +447,11 @@ JS;
     			        });
                         
                         // Create new
-    			        jQuery(\'#stcoakbles_createnew_'.$row.'\').on("click",function(){
+    			        document.querySelector(\'#stcoakbles_createnew_'.$row.'\').addEventListener("click",function(){
     			             jQuery(\'#derived_product_new'.$row.'\').show();
     			             jQuery(\'#derived_product_existing'.$row.'\').hide();
     			             jQuery(\'#derived_product_image_loader'.$row.'\').show();
-    			             jQuery(\'#stcoakbles_loadproduct_'.$row.'\').removeClass("btn-success");
+    			             document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\').classList.remove("btn-success");
     			             jQuery(this).addClass("btn-success");
     			             jAddElement(\'\',\'\',\'\',0);
 
@@ -460,12 +466,12 @@ JS;
     			         }
     				    </script>';
 
-	    $html.='
+        $html.='
 				<table class="table table-bordered" id="derived_product_'.$row.'" style="width:100%; min-width:450px;">
 				    <tr>
 				        <td id="derived_product_image_loader'.$row.'" style="width:70px; height:85px;">'
-	    				            .$this->getImageLoaderMarkup($row).
-	    				            '</td>
+            .$this->getImageLoaderMarkup($row).
+            '</td>
 				         <td>
     				        <table>
                 				<thead>
@@ -497,8 +503,8 @@ JS;
                 </table>
                 <input type="hidden" name="'.$this->_product_paramName.'['.$row.'][is_new]" value="1"/>
             </div>';
-	    return $html;
-	}
+        return $html;
+    }
 
     /**
      * Creates the markup that generates the image upload mechanism
@@ -507,9 +513,9 @@ JS;
      * @return string
      * @since  1.4.0
      */
-	public function getImageLoaderMarkup($row)
-	{
-	    $html='
+    public function getImageLoaderMarkup($row)
+    {
+        $html='
 	        <div class="stockable_input-placeholder" style="border:1px solid #bbbbbb; border-radius:4px; width:80px; height:85px; background:url(../plugins/vmcustom/stockablecustomfields/assets/images/image-placeholder.png) no-repeat center 10% #fff">
                 <input name="derived_product_img['.$row.']" onchange="jQuery(\'#stockable_input-wrapper_'.$row.'\').css(\'display\',\'block\'); jQuery(\'#stockable_input-info_'.$row.'\').html(jQuery(this).attr(\'value\').split(\'/\').pop());" style="position:absolute; z-index:5; width:80px; height:85px; cursor: pointer;  opacity:0" type="file" />
                 <p class="stockable_input-text" style="position:relative; top:55px; font-size:0.7em; text-align:center; line-height:1em;">Click to add an image</p>
@@ -517,8 +523,8 @@ JS;
                     <span id="stockable_input-info_'.$row.'" style=""></span>
                 </div>
             </div>';
-	    return $html;
-	}
+        return $html;
+    }
 
     /**
      * Proxy function to get a product
@@ -672,23 +678,23 @@ JS;
         return true;
     }
 
-	/**
-	 * Check if the user has filled in all the inputs for the custom fields
-	 *
-	 * @param 	array $input
-	 * @return	boolean
-	 * @since	1.0
-	 */
-	public function isValidInput($input)
-	{
-		foreach ($input as $custom_id=>$inp){
-			$value= isset($inp['value']) ? StringHelper::trim($inp['value']) : '';
-			if(isset($inp['value']) && empty($value)) {
-			    return false;
+    /**
+     * Check if the user has filled in all the inputs for the custom fields
+     *
+     * @param 	array $input
+     * @return	boolean
+     * @since	1.0
+     */
+    public function isValidInput($input)
+    {
+        foreach ($input as $custom_id=>$inp){
+            $value= isset($inp['value']) ? StringHelper::trim($inp['value']) : '';
+            if(isset($inp['value']) && empty($value)) {
+                return false;
             }
-		}
-		return true;
-	}
+        }
+        return true;
+    }
 
     /**
      *
@@ -792,19 +798,19 @@ JS;
      */
     protected function _createMediaFile($file, $product_id)
     {
-	    jimport('joomla.filesystem.file');
+        jimport('joomla.filesystem.file');
 
-	    //the allowed types of files
-	    $allowed_extensions=array('jpg','jpeg','gif','png');
-	    $extension = strtolower(JFile::getExt($file['name']));
+        //the allowed types of files
+        $allowed_extensions=array('jpg','jpeg','gif','png');
+        $extension = strtolower(JFile::getExt($file['name']));
 
-	    //Tha max allowed file in bytes
-	    $max_size=500000000; //~50MB
+        //Tha max allowed file in bytes
+        $max_size=500000000; //~50MB
 
-	    if($file['size']>$max_size){
-	        throw new \RuntimeException('File:'.$file['name'].' exceeds the max limit of '.$max_size);
-	        return false;
-	    }
+        if($file['size']>$max_size){
+            throw new \RuntimeException('File:'.$file['name'].' exceeds the max limit of '.$max_size);
+            return false;
+        }
 
         // allowed file type and is real file
         if (in_array($extension, $allowed_extensions) && $file['size'] > 0) {
@@ -869,17 +875,17 @@ JS;
 
                         try{
                             // Create and populate an object.
-                           $row=new stdClass();
-                           $row->virtuemart_product_id=$product_id;
-                           $row->virtuemart_media_id=$media_id;
-                           $row->ordering=1;
+                            $row=new stdClass();
+                            $row->virtuemart_product_id=$product_id;
+                            $row->virtuemart_media_id=$media_id;
+                            $row->ordering=1;
 
-                           $result = Factory::getDbo()->insertObject('#__virtuemart_product_medias', $row);
+                            $result = Factory::getDbo()->insertObject('#__virtuemart_product_medias', $row);
                         }
                         catch(\RuntimeException $e){
                             \vmError($e->getMessage());
                             throw $e;
-				            $result=false;
+                            $result=false;
                         }
                     }
                     return true;
@@ -887,7 +893,7 @@ JS;
             }
         }
         return false;
-	}
+    }
 
     /**
      * Update the table virtuemart_products witha givev field>value
@@ -916,25 +922,25 @@ JS;
         return $result;
     }
 
-	/**
-	 * Sets the price display for a product
-	 *
-	 * @param 	Table	A database object $product
-	 * @since	1.0
-	 */
-	public function setPriceDisplay(&$product)
-	{
-		$product->product_price_display='';
-		if(empty($product->allPrices[$product->selectedPrice]['product_price'])) {
-		    return;
+    /**
+     * Sets the price display for a product
+     *
+     * @param 	Table	A database object $product
+     * @since	1.0
+     */
+    public function setPriceDisplay(&$product)
+    {
+        $product->product_price_display='';
+        if(empty($product->allPrices[$product->selectedPrice]['product_price'])) {
+            return;
         }
-		$vendor_model = \VmModel::getModel('vendor');
-		$vendor_model->setId($product->virtuemart_vendor_id);
-		$vendor = $vendor_model->getVendor();
-		$vendor_model = \VmModel::getModel('vendor');
-		$currencyDisplay = \CurrencyDisplay::getInstance($vendor->vendor_currency,$vendor->virtuemart_vendor_id);
-		$product->product_price_display = $currencyDisplay->priceDisplay($product->allPrices[$product->selectedPrice]['product_price'],(int)$product->allPrices[$product->selectedPrice]['product_currency'],1,true);
-	}
+        $vendor_model = \VmModel::getModel('vendor');
+        $vendor_model->setId($product->virtuemart_vendor_id);
+        $vendor = $vendor_model->getVendor();
+        $vendor_model = \VmModel::getModel('vendor');
+        $currencyDisplay = \CurrencyDisplay::getInstance($vendor->vendor_currency,$vendor->virtuemart_vendor_id);
+        $product->product_price_display = $currencyDisplay->priceDisplay($product->allPrices[$product->selectedPrice]['product_price'],(int)$product->allPrices[$product->selectedPrice]['product_currency'],1,true);
+    }
 
     /**
      * Checks if the current custom is stockable
