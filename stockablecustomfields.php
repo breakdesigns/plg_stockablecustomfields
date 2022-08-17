@@ -63,21 +63,6 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
         }
         $this->setConfigParameterable('customfield_params', $varsToPush);
         $this->_product_paramName = 'customfield_params';
-        $this->_init();
-    }
-
-    /**
-     * Runs on the initialization of the plugin
-     *
-     * @throws Exception
-     * @since 1.5.1
-     */
-    protected function _init()
-    {
-        if (Factory::getApplication()->isClient('administrator')) {
-            HTMLHelper::_('behavior.framework', true);
-            HTMLHelper::_('behavior.modal');
-        }
     }
 
     /**
