@@ -414,7 +414,7 @@ JS;
 
         $html.='<script type="text/javascript">
                          if(typeof initIframeModal == "function") {
-                            initIframeModal(\'modal-' . $modal_id .'\', \'' . $loadProductsURL .'\', ' . $modal_width . ',' . $modal_height . ');               
+                            initIframeModal(\'modal-' . $modal_id .'\', \'' . $loadProductsURL .'\', ' . $modal_width . ',' . $modal_height . ');              
                          }                        
                         
     					// Load existing
@@ -422,6 +422,10 @@ JS;
     				        e.preventDefault();
     				        if(typeof initIframeModal !="function") {
     				            alert("You need to save the product with a stockable variation, to use that feature");
+    				            // Do not open a modal if it is not instantiated properly
+    				            jQuery(\'#modal-' . $modal_id .'\').on(\'show.bs.modal\', function() {
+    				                this.modal.hide();
+    				            });
     				            return false;
     				        }
     			             jQuery(\'#derived_product_new'.$row.'\').hide();
