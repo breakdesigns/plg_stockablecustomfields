@@ -12,7 +12,6 @@ function initIframeModal(modalId, url, width, height) {
             jQuery('body').addClass('modal-open');
             let modalBody = jQuery(this).find('.modal-body');
             modalBody.find('iframe').remove();
-            console.log(10);
             modalBody.prepend('<iframe class="iframe" src="'+url+'" name="" height="'+height+'" width="'+width+'"></iframe>');
         }).on('shown.bs.modal', function() {
             var modalHeight = jQuery('div.modal:visible').outerHeight(true),
