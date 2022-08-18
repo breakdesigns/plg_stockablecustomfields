@@ -258,7 +258,6 @@ Class CustomfieldStockablecustomfield
             $q->order('pc.ordering ASC');
         }
         $db->setQuery($q, $offset = false, $limit);
-
         try {
             $result = $db->loadObjectList();
         } catch (\RuntimeException $e) {
@@ -346,7 +345,6 @@ Class CustomfieldStockablecustomfield
                         self::deleteProductCustomfields($custom_id, $product_id, $fieldName, '>', 0);
                     }
                     $tableCustomfields = $customfieldModel->getTable('product_customfields');
-                    $tableCustomfields->setPrimaryKey('virtuemart_product_id');
                     $tableCustomfields->_xParams = 'customfield_params';
                     $result = $tableCustomfields->bindChecknStore($data);
                 }
