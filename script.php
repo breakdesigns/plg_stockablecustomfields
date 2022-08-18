@@ -40,8 +40,8 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	 * @return
 	 * @since 		2.0
 	 */
-	public function install($parent) {
-
+	public function install($parent)
+    {
 	}
 
 	/**
@@ -56,7 +56,8 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	 * @return
 	 * @since 		2.0
 	 */
-	public function update($parent) {
+	public function update($parent)
+    {
 	}
 
 
@@ -83,7 +84,6 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
             $this->printed_messages = [];
 
             $oldRelease = $this->getParam('version');
-            $new_release = $parent->get("manifest")->version;
             foreach ($milestone_versions as $m_v) {
                 if (version_compare($oldRelease, $m_v) == -1) {
                     $this->printed_messages[] = $messages[$m_v];
@@ -104,7 +104,8 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	 * @return
 	 * @since 		2.0
 	 */
-	public function postflight($type, $parent) {
+	public function postflight($type, $parent)
+    {
 		$db = Factory::getDbo();
 		$status = new stdClass;
 		$status->modules = [];
@@ -112,7 +113,6 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 		$status->templateoverrides= [];
 		$src = $parent->getParent()->getPath('source');
 		$manifest = $parent->getParent()->manifest;
-
 		$plugins = $manifest->xpath('plugins/plugin');
 
 		foreach ($plugins as $plugin)
@@ -132,7 +132,7 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 
 			$query = "UPDATE #__extensions SET enabled=1 WHERE type='plugin' AND element=".$db->quote($name)." AND folder=".$db->quote($group);
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			$status->plugins[] = array('name' => $name, 'group' => $group, 'result' => $result);
 		}
 
@@ -162,13 +162,13 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 			{
 				$position ='cpanel';
 				$db->setQuery("UPDATE #__modules SET `position`=".$db->quote($position).",`published`='1' WHERE `module`=".$db->quote($name));
-				$db->query();
+				$db->execute();
 
 				$db->setQuery("SELECT id FROM #__modules WHERE `module` = ".$db->quote($name));
 				$id = (int)$db->loadResult();
 
 				$db->setQuery("INSERT IGNORE INTO #__modules_menu (`moduleid`,`menuid`) VALUES (".$id.", 0)");
-				$db->query();
+				$db->execute();
 			}
 		}
 
@@ -187,7 +187,6 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 				$final_destination=$destination.DIRECTORY_SEPARATOR.$tmpl.DIRECTORY_SEPARATOR.'html';
 				$this->recurse_copy($source,$final_destination);
 			}
-
 		}
 
 		$this->installationResults($status,$type);
@@ -202,7 +201,8 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	 * @param String $dst path
 	 * @param String $type modules, plugins, languageBE, languageFE
 	 */
-	private function recurse_copy($src,$dst,$last=false ) {
+	private function recurse_copy($src,$dst,$last=false )
+    {
         $dst_exist = Folder::exists($dst);
         if (!$dst_exist) {
             $dst_exist = Folder::create($dst);
