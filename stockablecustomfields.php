@@ -1138,7 +1138,7 @@ JS;
         $input = Factory::getApplication()->input;
         $url = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=' . (int)$category_id;
         if(Multilanguage::isEnabled()) {
-            $url .= '&lang=' . Factory::getLanguage()->getTag() ;
+            $url .= '&lang=' . Factory::getApplication()->getLanguage()->getTag() ;
         }
 
         foreach ($product_ids as $pid) {
