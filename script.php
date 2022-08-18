@@ -12,12 +12,17 @@
 // Check to ensure this file is included in Joomla!
 defined( '_JEXEC' ) or die;
 
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
+
 /**
- * Load the ePahali installer
+ * Load the installer
  *
  * @copyright
  * @author 		Sakis Terz
- * @see 		http://docs.joomla.org/Developing_a_Model-View-Controller_%28MVC%29_Component_for_Joomla!1.6_-_Part_15
  * @access 		public
  * @param
  * @return
@@ -55,39 +60,37 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	}
 
 
+    /**
+     * Preflight routine executed before install and update
+     *
+     * @param        $type    string    type of change (install, update or discover_install)
+     *
+     * @return
+     * @since         2.0
+     * @copyright
+     * @author        Sakis Terzis
+     * @todo
+     * @see
+     * @access        public
+     */
+    public function preflight($type, $parent)
+    {
+        if ($type == 'update') {
+            //store the milestone versions and the messages that each 1 will print
+            $milestone_versions = [];
+            $messages = [];
+            //E.G. $messages['1.8.0']='New feature: Result page is now based on menu items.';
+            $this->printed_messages = [];
 
-	/**
-	 * Preflight routine executed before install and update
-	 *
-	 * @copyright
-	 * @author 		Sakis Terzis
-	 * @todo
-	 * @see
-	 * @access 		public
-	 * @param 		$type	string	type of change (install, update or discover_install)
-	 * @return
-	 * @since 		2.0
-	 */
-	public function preflight($type, $parent) {
-
-		jimport('joomla.filesystem.file');
-
-		if($type=='update'){
-			//store the milestone versions and the messages that each 1 will print
-			$milestone_versions=array();
-			$messages=array();
-			//E.G. $messages['1.8.0']='New feature: Result page is now based on menu items.';
-			$this->printed_messages=array();
-
-			$oldRelease=$this->getParam('version');
-			$new_release=$parent->get( "manifest" )->version;
-			foreach ($milestone_versions as $m_v){
-				if(version_compare($oldRelease, $m_v)==-1){
-					$this->printed_messages[]=$messages[$m_v];
-				}
-			}
-		}
-	}
+            $oldRelease = $this->getParam('version');
+            $new_release = $parent->get("manifest")->version;
+            foreach ($milestone_versions as $m_v) {
+                if (version_compare($oldRelease, $m_v) == -1) {
+                    $this->printed_messages[] = $messages[$m_v];
+                }
+            }
+        }
+    }
 
 	/**
 	 * Postflight routine executed after install and update
@@ -102,11 +105,11 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	 * @since 		2.0
 	 */
 	public function postflight($type, $parent) {
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$status = new stdClass;
-		$status->modules = array();
-		$status->plugins = array();
-		$status->templateoverrides=array();
+		$status->modules = [];
+		$status->plugins = [];
+		$status->templateoverrides= [];
 		$src = $parent->getParent()->getPath('source');
 		$manifest = $parent->getParent()->manifest;
 
@@ -119,15 +122,15 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 
 			if($name!='stockablecustomfields'){
 				$path = $src.'/plugins/'.$group;
-				if (JFolder::exists($src.'/plugins/'.$group.'/'.$name))
+				if (Folder::exists($src.'/plugins/'.$group.'/'.$name))
 				{
 					$path = $src.'/plugins/'.$group.'/'.$name;
 				}
-				$installer = new JInstaller;
+				$installer = new Installer;
 				$result = $installer->install($path);
 			}else $result=true; //installed by the current manifest
 
-			$query = "UPDATE #__extensions SET enabled=1 WHERE type='plugin' AND element=".$db->Quote($name)." AND folder=".$db->Quote($group);
+			$query = "UPDATE #__extensions SET enabled=1 WHERE type='plugin' AND element=".$db->quote($name)." AND folder=".$db->quote($group);
 			$db->setQuery($query);
 			$db->query();
 			$status->plugins[] = array('name' => $name, 'group' => $group, 'result' => $result);
@@ -151,7 +154,7 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 				$isUpdate = (int)$db->loadResult();
 			}
 
-			$installer = new JInstaller;
+			$installer = new Installer;
 			$result = $installer->install($path);
 
 			$status->modules[] = array('name' => $name, 'client' => $client, 'result' => $result);
@@ -179,7 +182,7 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 			if (is_null($client))$client = 'site';
 			($client == 'administrator') ? $destination = JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'templates' : $path =JPATH_SITE.DIRECTORY_SEPARATOR.'templates';
 
-			$templates=JFolder::folders($destination);
+			$templates=Folder::folders($destination);
 			foreach ($templates as $tmpl){
 				$final_destination=$destination.DIRECTORY_SEPARATOR.$tmpl.DIRECTORY_SEPARATOR.'html';
 				$this->recurse_copy($source,$final_destination);
@@ -200,39 +203,41 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	 * @param String $type modules, plugins, languageBE, languageFE
 	 */
 	private function recurse_copy($src,$dst,$last=false ) {
-		$dst_exist=JFolder::exists($dst);
-		jimport( 'joomla.filesystem.folder' );
-		if(!$dst_exist)$dst_exist=JFolder::create($dst);
-		$dir = opendir($src);
+        $dst_exist = Folder::exists($dst);
+        if (!$dst_exist) {
+            $dst_exist = Folder::create($dst);
+        }
+        $dir = opendir($src);
 
-		if(is_resource($dir) && $dst_exist){
-			jimport( 'joomla.filesystem.file' );
-			while(false !== ( $file = readdir($dir)) ) {
-				if (( $file != '.' ) && ( $file != '..' )) {
-					if ( is_dir($src .DIRECTORY_SEPARATOR. $file) ) {
-						$this->recurse_copy($src .DIRECTORY_SEPARATOR. $file,$dst .DIRECTORY_SEPARATOR. $file);
-					}
-					else {
-						if(JFile::exists($dst .DIRECTORY_SEPARATOR. $file)){
-
-						}
-						if(!JFile::copy($src .DIRECTORY_SEPARATOR. $file,$dst .DIRECTORY_SEPARATOR. $file)){
-								//$app = JFactory::getApplication();
-								//$app -> enqueueMessage('Couldnt copy '.$src .DIRECTORY_SEPARATOR. $file.' to '.$dst .DIRECTORY_SEPARATOR. $file);
-						}
-					}
-				}
-			}
-		}
-		if(is_resource($dir))closedir($dir);
-		if (is_dir($src) && $last) JFolder::delete($src);
+        if (is_resource($dir) && $dst_exist) {
+            while (false !== ($file = readdir($dir))) {
+                if (($file != '.') && ($file != '..')) {
+                    if (is_dir($src . DIRECTORY_SEPARATOR . $file)) {
+                        $this->recurse_copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
+                    } else {
+                        if (File::exists($dst . DIRECTORY_SEPARATOR . $file)) {
+                        }
+                        if (!File::copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file)) {
+                            //$app = Factory::getApplication();
+                            //$app -> enqueueMessage('Couldnt copy '.$src .DIRECTORY_SEPARATOR. $file.' to '.$dst .DIRECTORY_SEPARATOR. $file);
+                        }
+                    }
+                }
+            }
+        }
+		if(is_resource($dir)) {
+		    closedir($dir);
+        }
+		if (is_dir($src) && $last) {
+		    Folder::delete($src);
+        }
 	}
 
 	/**
-	 * get a variable from the manifest file (actually, from the manifest cache).
+	 * Get a variable from the manifest file (actually, from the manifest cache).
 	 */
 	function getParam( $name ) {
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$db->setQuery('SELECT manifest_cache FROM #__extensions WHERE element = "stockablecustomfields"');
 		$manifest = json_decode( $db->loadResult(), true );
 		return $manifest[ $name ];
@@ -240,25 +245,25 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 
 	private function installationResults($status,$type)
 	{
-		$language = JFactory::getLanguage();
+		$language = Factory::getApplication()->getLanguage();
 		$language->load('plg_vmcustom_stockablecustomfields');
 		$rows = 0;
 
 		if($type=='update'){
-			$status_type=JText::_('PLG_STOCKABLECUSTOMFIELDS_UPDATE_STATUS');
-			$success_msg='<span style="color:#5cb85c">'.JText::_('PLG_STOCKABLECUSTOMFIELDS_SUCEESS').'<span>';
-			$fail_msg='<span style="color:#ff0000">'.JText::_('PLG_STOCKABLECUSTOMFIELDS_NOT_UPDATED').'</span>';
+			$status_type=Text::_('PLG_STOCKABLECUSTOMFIELDS_UPDATE_STATUS');
+			$success_msg='<span style="color:#5cb85c">'.Text::_('PLG_STOCKABLECUSTOMFIELDS_SUCEESS').'<span>';
+			$fail_msg='<span style="color:#ff0000">'.Text::_('PLG_STOCKABLECUSTOMFIELDS_NOT_UPDATED').'</span>';
 		} else{
-			$status_type=JText::_('PLG_STOCKABLECUSTOMFIELDS_INSTALLATION_STATUS');
-			$success_msg='<span style="color:#5cb85c">'.JText::_('PLG_STOCKABLECUSTOMFIELDS_SUCEESS').'<span>';
-			$fail_msg='<span style="color:#ff0000">'.JText::_('PLG_STOCKABLECUSTOMFIELDS_NOT_INSTALLED').'<span>';
+			$status_type=Text::_('PLG_STOCKABLECUSTOMFIELDS_INSTALLATION_STATUS');
+			$success_msg='<span style="color:#5cb85c">'.Text::_('PLG_STOCKABLECUSTOMFIELDS_SUCEESS').'<span>';
+			$fail_msg='<span style="color:#ff0000">'.Text::_('PLG_STOCKABLECUSTOMFIELDS_NOT_INSTALLED').'<span>';
 		}
 		?>
 <?php
 //if update messages
 if(!empty($this->printed_messages)){?>
 <div class="clr"></div>
-<h3><?php echo JText::_('PLG_STOCKABLECUSTOMFIELDS_UPDATE_MESSAGES');?></h3>
+<h3><?php echo Text::_('PLG_STOCKABLECUSTOMFIELDS_UPDATE_MESSAGES');?></h3>
 <div id="system-message-container">
 <dl id="system-message">
 <dt class="message">Message</dt>
@@ -277,8 +282,8 @@ foreach ($this->printed_messages as $message){?>
 <table class="adminlist table table-striped">
 	<thead>
 		<tr>
-			<th class="title"><?php echo JText::_('PLG_STOCKABLECUSTOMFIELDS_EXTENSION'); ?></th>
-			<th><?php echo JText::_('PLG_STOCKABLECUSTOMFIELDS_GROUP'); ?></th>
+			<th class="title"><?php echo Text::_('PLG_STOCKABLECUSTOMFIELDS_EXTENSION'); ?></th>
+			<th><?php echo Text::_('PLG_STOCKABLECUSTOMFIELDS_GROUP'); ?></th>
 			<th width="30%"><?php echo $status_type; ?></th></tr>
 	</thead>
 	<tfoot>
