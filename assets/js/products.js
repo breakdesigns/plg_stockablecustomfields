@@ -1,5 +1,7 @@
-function addToList(field1,field2,field3,field4, id){	
-	if (window.parent) window.parent.jAddElement(field1,field2,field3,field4,id);
+function addToList(field1, field2, field3, field4, id, row) {
+	if (window.parent) {
+		window.parent.jAddElement(field1, field2, field3, field4, id, row);
+	}
 	setSelectedElement(id);
 }
 

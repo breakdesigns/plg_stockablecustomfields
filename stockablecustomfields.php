@@ -391,7 +391,7 @@ JS;
      */
     public function getDerivedProductFormMarkup($row, $product, $field)
     {
-        $loadProductsURL = 'index.php?option=com_virtuemart&view=product&custom_id='.$field->virtuemart_custom_id.'&row='.$row.'&product_id='.$product->virtuemart_product_id.'&layout=simple2&tmpl=component&function=jSelectProduct';
+        $loadProductsURL = 'index.php?option=com_virtuemart&view=product&custom_id=' . $field->virtuemart_custom_id . '&row=' . $row . '&product_id=' . $product->virtuemart_product_id . '&layout=simple2&tmpl=component&function=jSelectProduct&row=' . $row;
         $popupButton = new PopupButton();
         $modal_id = 'productsModal' . $row;
         $modal_width = 850;
@@ -442,17 +442,8 @@ JS;
     			             jQuery(\'#derived_product_image_loader'.$row.'\').show();
     			             document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\').classList.remove("btn-success");
     			             jQuery(this).addClass("btn-success");
-    			             jAddElement(\'\',\'\',\'\',0);
-
-    			        })
-    				    function jAddElement(productname,productsku, productstock, productprice, productid){
-    			             jQuery(\'#derived_product_existing_name'.$row.'\').text(productname);
-    			             jQuery(\'#derived_product_existing_sku'.$row.'\').text(productsku);
-    			             jQuery(\'#derived_product_existing_stock'.$row.'\').text(productstock);
-    			             jQuery(\'#derived_product_existing_price'.$row.'\').text(productprice);
-    			             jQuery(\'#derived_product_id'.$row.'\').val(productid);
-
-    			         }
+    			             jAddElement(\'\',\'\',\'\',0,'. $row . ');
+    			        });
     				    </script>';
 
         $html.='

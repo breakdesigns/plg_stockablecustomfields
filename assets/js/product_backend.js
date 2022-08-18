@@ -35,3 +35,21 @@ function initIframeModal(modalId, url, width, height) {
         });
     }
 }
+
+/**
+ * Adds the selected product to the stockable record
+ *
+ * @param {String} productname
+ * @param {String} productsku
+ * @param {String} productstock
+ * @param {String} productprice
+ * @param {Number} productid
+ * @param {Number} row
+ */
+function jAddElement(productname,productsku, productstock, productprice, productid, row){
+    jQuery('#derived_product_existing_name' + row).text(productname);
+    jQuery('#derived_product_existing_sku' + row).text(productsku);
+    jQuery('#derived_product_existing_stock'+ row).text(productstock);
+    jQuery('#derived_product_existing_price' + row).text(productprice);
+    jQuery('#derived_product_id'  + row).val(productid);
+}
