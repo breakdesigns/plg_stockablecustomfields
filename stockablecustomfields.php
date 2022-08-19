@@ -595,18 +595,15 @@ JS;
             if (empty($derived_product_id)) {
                 return false;
             }
-        } //An existing product is selected as derived
+        } //An existing product is selected as derived. check if the derived is child product of the current parent
         else {
-            if ($is_new) {
-                //check if the derived is child product of the current parent
-                if ($derived_product_id != $product_id) {
-                    //update the parent_product_id of the derived
-                    $this->_updateproduct($derived_product_id, 'product_parent_id', $product_id);
-                }
+            if ($is_new && $derived_product_id != $product_id) {
+                //update the parent_product_id of the derived
+                $this->_updateproduct($derived_product_id, 'product_parent_id', $product_id);
             }
         }
 
-        // we have child product. Let's give it custom fields or update the existings
+        // we have child product. Let's give it custom fields or update the existing
         if (!empty($derived_product_id)) {
             if ($is_new) {
                 // update the customfield params of the master product. Set the child id as param
