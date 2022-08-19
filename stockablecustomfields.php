@@ -847,23 +847,30 @@ JS;
 
                     //create the record to the product_medias db table
                     if(!empty($media_id)){
-
-                        try{
+                        try {
                             // Create and populate an object.
-                            $row=new stdClass();
-                            $row->virtuemart_product_id=$product_id;
-                            $row->virtuemart_media_id=$media_id;
-                            $row->ordering=1;
+                            $row = new stdClass();
+                            $row->virtuemart_product_id = $product_id;
+                            $row->virtuemart_media_id = $media_id;
+                            $row->ordering = 1;
 
                             $result = Factory::getDbo()->insertObject('#__virtuemart_product_medias', $row);
-                        }
-                        catch(\RuntimeException $e){
+                        } catch (\RuntimeException $e) {
                             \vmError($e->getMessage());
                             throw $e;
-                            $result=false;
+                            $result = false;
+                        }
+
+                        try {
+                            $this->_updateproduct($product_id, 'has_medias', 1);
+                        }
+                        catch (\RuntimeException $e) {
+                            \vmError($e->getMessage());
+                            throw $e;
+                            $result = false;
                         }
                     }
-                    return true;
+                    return $result;
                 }
             }
         }
