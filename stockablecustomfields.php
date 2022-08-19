@@ -866,7 +866,7 @@ JS;
                         }
                         catch (\RuntimeException $e) {
                             \vmError($e->getMessage());
-                            throw $e;
+                            // Do not throw the exception the 'has_medias' does not exist in older versions.
                             $result = false;
                         }
                     }
