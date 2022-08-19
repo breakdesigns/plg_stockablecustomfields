@@ -40,7 +40,7 @@ if (typeof Stockablecustomfields === "undefined") {
 			},
 			setEvents : function() {
 					StockabklesStart=true
-					var forms=jQuery('form.product');
+					let forms=jQuery('form.product');
 
 					//call the function that creates the tooltips
 					if (typeof CustomfieldsForAll!='undefined' && typeof CustomfieldsForAll.enableTooltips== "function") {
@@ -57,26 +57,26 @@ if (typeof Stockablecustomfields === "undefined") {
 					}
 			},
 			createStockableObject : function(form) {
-				var stockArea=form.find('.stockablecustomfields_fields_wrapper');
-				var current_product_id=form.find('input[name="stockable_current_product_id"]').val();
-				var parent_product_id=form.find('input[name="stockable_parent_product_id"]').val();
+				const stockArea = form.find('.stockablecustomfields_fields_wrapper');
+				const current_product_id = form.find('input[name="stockable_current_product_id"]').val();
+				const parent_product_id = form.find('input[name="stockable_parent_product_id"]').val();
 
-				if(typeof StockableObjects!='undefined' && typeof StockableObjects[parent_product_id]!='undefined'){
-					var StockableCombinations=JSON.parse(StockableObjects[parent_product_id].stockableCustomFieldsCombinations);
-					var combinations=StockableCombinations.combinations;
-					var urls=JSON.parse(StockableObjects[parent_product_id].stockableCustomFieldsProductUrl);
-					var stockable_out_of_stock_display=StockableObjects[parent_product_id].stockable_out_of_stock_display;
+				if (typeof StockableObjects != 'undefined' && typeof StockableObjects[parent_product_id] != 'undefined') {
+					const StockableCombinations = JSON.parse(StockableObjects[parent_product_id].stockableCustomFieldsCombinations);
+					const combinations = StockableCombinations.combinations;
+					const urls = JSON.parse(StockableObjects[parent_product_id].stockableCustomFieldsProductUrl);
+					const stockable_out_of_stock_display = StockableObjects[parent_product_id].stockable_out_of_stock_display;
+					return new Stockable(stockArea, combinations, urls, current_product_id, stockable_out_of_stock_display);
 				}
-				else return;
-				return new Stockable(stockArea, combinations, urls, current_product_id, stockable_out_of_stock_display);
+				return;
 			},
 			//backwards compatibility function for PB 3.0.7
 			update:function(stockArea, callback){
-				var form=jQuery(stockArea).closest('form');
+				let form=jQuery(stockArea).closest('form');
 				Stockablecustomfields.createStockableObject(form).update(callback);
 			},
 			setSelected:function(stockArea){
-				var form=jQuery(stockArea).closest('form');
+				let form=jQuery(stockArea).closest('form');
 				Stockablecustomfields.createStockableObject(form).setSelected();
 			}
 	}
@@ -90,16 +90,18 @@ if (typeof Stockablecustomfields === "undefined") {
 	};
 
 	Stockable.prototype.setSelected=function(){
-        var currentCombination=false;
-        var currentProductid=this.current_product_id;
+        let currentCombination=false;
+        let currentProductid=this.current_product_id;
 
         // find the current combination
         jQuery.each(this.combinations, function(index1,combination){
-          if(combination.product_id==currentProductid) currentCombination=combination;
+          if(combination.product_id==currentProductid) {
+          	currentCombination=combination;
+		  }
         });
 
         if(currentCombination){
-            var customs=jQuery(this.stockArea).find( "[name^='customProductData']" );
+            let customs=jQuery(this.stockArea).find( "[name^='customProductData']" );
             customs_grouped=this.groupByName(customs);
 
             if(customs.length>0){
@@ -394,8 +396,8 @@ if (typeof Stockablecustomfields === "undefined") {
 			}
 		};
 
-	jQuery.noConflict();
-	jQuery(document).ready(function($) {
+	addEventListener('DOMContentLoaded', (event) => {
+		jQuery.noConflict();
 		Stockablecustomfields.setEvents();
 	});
 }
