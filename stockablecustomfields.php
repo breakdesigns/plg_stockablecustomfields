@@ -20,7 +20,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Toolbar\Button\PopupButton;
-
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class plgVmCustomStockablecustomfields
@@ -778,11 +778,9 @@ JS;
      */
     protected function _createMediaFile($file, $product_id)
     {
-        jimport('joomla.filesystem.file');
-
         //the allowed types of files
         $allowed_extensions=array('jpg','jpeg','gif','png');
-        $extension = strtolower(JFile::getExt($file['name']));
+        $extension = strtolower(File::getExt($file['name']));
 
         //Tha max allowed file in bytes
         $max_size=500000000; //~50MB
@@ -796,10 +794,10 @@ JS;
         if (in_array($extension, $allowed_extensions) && $file['size'] > 0) {
             $file_type = 'product';
             $destination = VmConfig::get('media_product_path');
-            $name = JFile::makeSafe($file['name']);
+            $name = File::makeSafe($file['name']);
             $img_destination_name = JPATH_SITE . DIRECTORY_SEPARATOR . $destination . $name;
             // upload original image
-            $upload = JFile::upload($file['tmp_name'], $img_destination_name);
+            $upload = File::upload($file['tmp_name'], $img_destination_name);
 
 
             //if upload was successfull go on
