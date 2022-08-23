@@ -373,8 +373,8 @@ if (typeof Stockablecustomfields === "undefined") {
                     jQuery(customs[i].selected_option).removeAttr('checked');
                 }
             } else if (customs[i].type == 'select') {
-                var select = jQuery(customs[i].selected_option);
-                var selected = jQuery(select).find('option:selected');
+                const select = jQuery(customs[i].selected_option);
+                let selected = jQuery(select).find('option:selected');
                 if ((selected != false && jQuery(selected).attr('disabled') == 'disabled' || jQuery(selected).attr('disabled') == true) && StockabklesStart == false) {
                     jQuery(selected).removeAttr('selected');
                     //when we remove selected, the browser sets the selection to an enabled option. Hence we need reupdate
