@@ -1113,8 +1113,9 @@ JS;
                 $html .= '<script>' . $finalScript . '</script>';
 
                 $doc = Factory::getDocument();
-                // load it, as in Custom Filters
                 $doc->addScript(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/js/stockables_fe.js');
+                // We need to load that. Otherwise we get js errors coming from the Virtuemart.updateContent fn
+                \vmJsApi::chosenDropDowns();
 
                 $group->stockableCombinations = $customfield_product_combinations;
                 $group->stockableCustom_ids = $custom_ids;
