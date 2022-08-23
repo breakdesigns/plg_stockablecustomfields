@@ -8,8 +8,8 @@ if (typeof Stockablecustomfields === "undefined") {
             var i = 0;
             var StockableObj = [];
             forms.each(function () {
-                var form = jQuery(this);
-                var stockArea = form.find('.stockablecustomfields_fields_wrapper');
+                const form = jQuery(this);
+                const stockArea = form.find('.stockablecustomfields_fields_wrapper');
                 //not found go next
                 if (stockArea.length == 0) {
                     return true;
@@ -189,8 +189,12 @@ if (typeof Stockablecustomfields === "undefined") {
             }
 
             //if there are combinations, use them to check the following customfields
-            if (currentCombinations.length > 0) var curCombinations = currentCombinations;
-            else curCombinations = combinations;
+            if (currentCombinations.length > 0) {
+                var curCombinations = currentCombinations;
+            }
+            else {
+                curCombinations = combinations;
+            }
 
             //store the combination found in current check
             var matchedCombinations = [];
@@ -202,8 +206,12 @@ if (typeof Stockablecustomfields === "undefined") {
                 }
             });
 
-            if (matchedCombinations.length > 0) currentCombinations = matchedCombinations;
-            else nomatch = true;
+            if (matchedCombinations.length > 0) {
+                currentCombinations = matchedCombinations;
+            }
+            else {
+                nomatch = true;
+            }
 
             //show only releveant combinations or load the product
             if (matchedCombinations.length > 0) {
@@ -222,7 +230,9 @@ if (typeof Stockablecustomfields === "undefined") {
                     if (nomatch == false && matchedCombinations.length > 0) {
                         if (callback && typeof (callback) === "function") {
                             callback(matchedCombinations, this.stockArea);
-                        } else this.loadProductPage(matchedCombinations);
+                        } else {
+                            this.loadProductPage(matchedCombinations);
+                        }
                     }
                 }
             }
@@ -232,8 +242,9 @@ if (typeof Stockablecustomfields === "undefined") {
      * Selects an option if is the only 1 enabled
      */
     Stockable.prototype.setSelection = function (customs, from) {
-        var enabled = [];
-        var checked = false;
+        let enabled = [];
+        let checked = false;
+
         //start with the custom fields below that
         for (let i = from + 1; i < customs.length; i++) {
             if (customs[i].type == 'input') {
@@ -249,7 +260,7 @@ if (typeof Stockablecustomfields === "undefined") {
         }
         //only 1 enabled. Select it
         if (enabled.length && checked == false) {
-            var inp = enabled.shift();
+            let inp = enabled.shift();
             if (!jQuery(inp).attr('checked')) {
                 jQuery(inp).attr('checked', 'checked');
                 return true;
@@ -261,20 +272,22 @@ if (typeof Stockablecustomfields === "undefined") {
      * Groups the custom fields based on their name and returns groups.
      */
     Stockable.prototype.groupByName = function (customs) {
-        var obj = {};
-        var array = [];
-        var options = [];
-        var stockArea = this.stockArea;
+        let obj = {};
+        let array = [];
+        const stockArea = this.stockArea;
 
         //create an obj with prop the names of the inputs/selects. 1 name -> 1 var
         customs.each(function (index, custom) {
-            var name = jQuery(this).attr('name');
+            const name = jQuery(this).attr('name');
+            let options = [];
             //remove the brackets in case of array variables
             name_filtered = name.replace(/[\[\]]/g, '');
 
             //the selects have values
             if (jQuery(this).is('select')) {
-                if (typeof obj[name_filtered] == 'undefined') var options = jQuery(custom).find('option');
+                if (typeof obj[name_filtered] == 'undefined') {
+                    options = jQuery(custom).find('option');
+                }
                 customObj = {
                     options: options,
                     selected_option: custom,
@@ -288,7 +301,7 @@ if (typeof Stockablecustomfields === "undefined") {
             else if (jQuery(this).is('input')) {
 
                 if (typeof obj[name_filtered] == 'undefined' && !jQuery(this).attr('checked')) {
-                    var options = jQuery(stockArea).find('input[name="' + name + '"]');
+                    options = jQuery(stockArea).find('input[name="' + name + '"]');
                     customObj = {
                         options: options,
                         selected_option: false,
@@ -297,7 +310,7 @@ if (typeof Stockablecustomfields === "undefined") {
                         name: name_filtered
                     };
                 } else if (jQuery(this).attr('checked')) {
-                    var options = jQuery(stockArea).find('input[name="' + name + '"]');
+                    options = jQuery(stockArea).find('input[name="' + name + '"]');
                     customObj = {
                         options: options,
                         selected_option: jQuery(this),
@@ -374,7 +387,7 @@ if (typeof Stockablecustomfields === "undefined") {
     };
 
     Stockable.prototype.setSelectedFields = function (customs, currentCombination) {
-        var customslength = customs.length;
+        const customslength = customs.length;
         jQuery.each(customs, function (index, custom) {
             jQuery.each(custom.options, function (x, option) {
                 if (currentCombination.customfield_ids[index] == jQuery(option).val()) {
