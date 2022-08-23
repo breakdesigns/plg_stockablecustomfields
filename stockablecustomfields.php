@@ -1112,8 +1112,7 @@ JS;
 				    StockableObjects[" . $product_parent_id . "]={" . $script . "};";
                 $html .= '<script>' . $finalScript . '</script>';
 
-                $doc = Factory::getDocument();
-                $doc->addScript(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/js/stockables_fe.js');
+                Factory::getDocument()->addScript(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/js/stockables_fe.js');
                 // We need to load that. Otherwise we get js errors coming from the Virtuemart.updateContent fn
                 \vmJsApi::chosenDropDowns();
 
