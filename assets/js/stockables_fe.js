@@ -221,9 +221,13 @@ if (typeof Stockablecustomfields === "undefined") {
                     var reupdate = this.setNextCompatibles(customs_grouped, num_index, matchedCombinations);
 
                     //automatically select an option when is the only enabled
-                    if (reupdate == false && num_index == countCustoms - 2) reupdate = this.setSelection(customs_grouped, num_index);
+                    if (reupdate == false && num_index == countCustoms - 2) {
+                        reupdate = this.setSelection(customs_grouped, num_index);
+                    }
 
-                    if (reupdate) this.update(callback);
+                    if (reupdate) {
+                        this.update(callback);
+                    }
                 }
                 //if last maybe we should load the product
                 else {
