@@ -429,7 +429,7 @@ if (typeof Stockablecustomfields === "undefined") {
         const url = this.urls[product_id];
         if (typeof Virtuemart !== "undefined") {
             if (typeof Virtuemart.updateContent == 'function') {
-                if (typeof Virtuemart.containerSelector == 'undefined') {
+                if (Virtuemart.containerSelector == '.category-view' || typeof Virtuemart.containerSelector == 'undefined' || jQuery(Virtuemart.containerSelector).length == 0) {
                     Virtuemart.containerSelector = '.product-container';
                 }
                 Virtuemart.container = jQuery(this.stockArea).closest(Virtuemart.containerSelector);
