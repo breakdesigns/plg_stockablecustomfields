@@ -1136,17 +1136,16 @@ JS;
      */
     public function getProductUrls($product_ids, $category_id)
     {
-        $product_urls = array();
+        $product_urls = [];
         $input = Factory::getApplication()->input;
         $url = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=' . (int)$category_id;
-        if(Multilanguage::isEnabled()) {
-            $url .= '&lang=' . Factory::getApplication()->getLanguage()->getTag() ;
+        if (Multilanguage::isEnabled()) {
+            $url .= '&lang=' . Factory::getApplication()->getLanguage()->getTag();
         }
 
         foreach ($product_ids as $pid) {
-
             if ($input->get('view', '') == 'productdetails') {
-                $product_urls[$pid] = Route::_($url. '&virtuemart_product_id=' . (int)$pid);
+                $product_urls[$pid] = Route::_($url . '&virtuemart_product_id=' . (int)$pid);
             } else {
                 $route = Route::_($url);
                 if (strpos($route, '?') === false) {
@@ -1157,6 +1156,7 @@ JS;
                 $product_urls[$pid] = $route;
             }
         }
+
         return $product_urls;
     }
 
