@@ -344,11 +344,10 @@ JS;
 	           <tr>
 	               <td style="width:90px; height:100px; background:#ffffff; padding:0;">';
         //image
-        if(!empty($derived_product->images[0])) {
-            $html.=$derived_product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
-        }
-        else {
-            $html.=$this->getImageLoaderMarkup($row);
+        if (!empty($derived_product->images[0])) {
+            $html .= $derived_product->images[0]->displayMediaThumb('class="img-fluid" style="float:none; display:block; margin:0 auto; padding:4px; box-sizing:border-box;"', false);
+        } else {
+            $html .= $this->getImageLoaderMarkup($row);
         }
 
         $html.=
