@@ -20,6 +20,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Toolbar\Button\PopupButton;
+use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Filesystem\File;
 
 /**
@@ -220,9 +221,9 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
             //add toolbar at the end (adding a new variation)
             $html.='
     		    <div class="btn-toolbar">
-        		    <a class="btn stcoakbles_add_customfield" id="stcoakbles_add_customfield'.$row.'" onclick="return false;">
-        		      <i class="icon-plus"></i><span>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_NEW_VARIATION').'</span>
-        		    </a>
+        		    <button type="button" class="btn btn-secondary stcoakbles_add_customfield" id="stcoakbles_add_customfield'.$row.'" onclick="return false;">
+        		      <span class="icon-plus" aria-hidden="true" style="margin-inline-end: 0.5rem;"></span><span>'.Text::_('PLG_STOCKABLECUSTOMFIELDS_NEW_VARIATION').'</span>
+        		    </button>
     		    </div>';
 
             // The new template uses another url to fetch custom fields.
@@ -341,7 +342,7 @@ JS;
         $html='
 	        <table class="table table-bordered" style="width:100%; min-width:450px;">
 	           <tr>
-	               <td style="width:90px; height:100px; background:#ffffff;">';
+	               <td style="width:90px; height:100px; background:#ffffff; padding:0;">';
         //image
         if(!empty($derived_product->images[0])) {
             $html.=$derived_product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
@@ -368,7 +369,7 @@ JS;
             				        <td>'.$derived_product->product_sku.'</td>
             				        <td>'.$derived_product->product_price_display.'</td>
             				        <td>
-            				        <a class="btn" target="_blank" href="'.Route::_('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$derived_product->virtuemart_product_id).'">'.
+            				        <a class="btn btn-sm btn-outline-dark" target="_blank" href="'.Route::_('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$derived_product->virtuemart_product_id).'">'.
             Text::_('JACTION_EDIT').
             '</td>
                 				</tr>
@@ -393,20 +394,30 @@ JS;
     {
         $loadProductsURL = 'index.php?option=com_virtuemart&view=product&custom_id=' . $field->virtuemart_custom_id . '&row=' . $row . '&product_id=' . $product->virtuemart_product_id . '&layout=simple2&tmpl=component&function=jSelectProduct&row=' . $row;
         $popupButton = new PopupButton();
+
+        // We need to set a parent toolbar in J4. Otherwise we get an error.
+        if(method_exists($popupButton, 'setParent')) {
+            $bar = Toolbar::getInstance('stockable_toolbar');
+            $popupButton->setParent($bar);
+        }
+
         $modal_id = 'productsModal' . $row;
         $modal_width = 850;
         $modal_height = 550;
         $popupButtonHtml = $popupButton->fetchButton('Modal', $modal_id, 'PLG_STOCKABLECUSTOMFIELDS_SELECT_EXISTING',
             $loadProductsURL, $modal_width, $modal_height);
-        // Replace the icon (non-existent) with the one we want
+
+        // Replace the icon (non-existent) with the one we want. It auto-adds an icon based on the btn name
         $popupButtonHtml = str_replace('icon-' . $modal_id, 'icon-briefcase', $popupButtonHtml);
+        // Replace the btn-success class
+        $popupButtonHtml = str_replace('btn-primary', 'btn-outline-secondary', $popupButtonHtml);
 
         $html = '
                 <div id="derived_product_wrapper_' . $row . '">
                     <div class="btn-toolbar">
                        <div class="btn-group btn-group_stockable_product">
                            <button class="btn btn-small btn-success" id="stcoakbles_createnew_' . $row . '" type="button">
-                            <i class="icon-plus"></i><span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_CREATE_NEW') . '</span>
+                            <i class="icon-plus" style="margin-inline-end: 0.5rem;"></i><span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_CREATE_NEW') . '</span>
                            </button>
                             ' . $popupButtonHtml . '
                        </div>
@@ -417,8 +428,13 @@ JS;
                             initIframeModal(\'modal-' . $modal_id .'\', \'' . $loadProductsURL .'\', ' . $modal_width . ',' . $modal_height . ');              
                          }                        
                         
+                        // BS3
+                        let modalWindowBtn = document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\');
+                        // BS5
+                        modalWindowBtn = modalWindowBtn ? modalWindowBtn : document.querySelector(\'[data-bs-target="#modal-' . $modal_id .'"]\');
+                        
     					// Load existing
-    				    document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\').addEventListener("click", function(e){
+    				    modalWindowBtn.addEventListener("click", function(e){
     				        e.preventDefault();
     				        if(typeof initIframeModal !="function") {
     				            alert("You need to save the product with a stockable variation, to use that feature");
@@ -432,16 +448,24 @@ JS;
     			             jQuery(\'#derived_product_existing'.$row.'\').show();
     			             jQuery(\'#derived_product_image_loader'.$row.'\').hide();
     			             jQuery(\'#stcoakbles_createnew_'.$row.'\').removeClass("btn-success");
+    			             jQuery(\'#stcoakbles_createnew_'.$row.'\').addClass("btn-outline-secondary");
+    			             jQuery(this).removeClass("btn-outline-secondary");
     			             jQuery(this).addClass("btn-success");
     			        });
                         
                         // Create new
     			        document.querySelector(\'#stcoakbles_createnew_'.$row.'\').addEventListener("click",function(){
+                            // BS3
+                            let modalWindowBtn = document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\');
+                            // BS5
+                            modalWindowBtn = modalWindowBtn ? modalWindowBtn : document.querySelector(\'[data-bs-target="#modal-' . $modal_id .'"]\');
     			             jQuery(\'#derived_product_new'.$row.'\').show();
     			             jQuery(\'#derived_product_existing'.$row.'\').hide();
     			             jQuery(\'#derived_product_image_loader'.$row.'\').show();
-    			             document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\').classList.remove("btn-success");
+    			             modalWindowBtn.classList.remove("btn-success");
+    			             modalWindowBtn.classList.add("btn-outline-secondary");
     			             jQuery(this).addClass("btn-success");
+    			             jQuery(this).removeClass("btn-outline-secondary");
     			             jAddElement(\'\',\'\',\'\',0,'. $row . ');
     			        });
     				    </script>';
@@ -449,11 +473,11 @@ JS;
         $html.='
 				<table class="table table-bordered" id="derived_product_'.$row.'" style="width:100%; min-width:450px;">
 				    <tr>
-				        <td id="derived_product_image_loader'.$row.'" style="width:70px; height:85px;">'
+				        <td id="derived_product_image_loader'.$row.'" style="width:90px; height:100px; padding:0;">'
             .$this->getImageLoaderMarkup($row).
             '</td>
 				         <td>
-    				        <table>
+    				        <table style="width:100%;">
                 				<thead>
                 				<tr>
                     				<th width="50%">'.Text::_('COM_VIRTUEMART_PRODUCT_FORM_NAME').'</th>
@@ -496,9 +520,9 @@ JS;
     public function getImageLoaderMarkup($row)
     {
         $html='
-	        <div class="stockable_input-placeholder" style="border:1px solid #bbbbbb; border-radius:4px; width:80px; height:85px; background:url(../plugins/vmcustom/stockablecustomfields/assets/images/image-placeholder.png) no-repeat center 10% #fff">
-                <input name="derived_product_img['.$row.']" onchange="jQuery(\'#stockable_input-wrapper_'.$row.'\').css(\'display\',\'block\'); jQuery(\'#stockable_input-info_'.$row.'\').html(jQuery(this).attr(\'value\').split(\'/\').pop());" style="position:absolute; z-index:5; width:80px; height:85px; cursor: pointer;  opacity:0" type="file" />
-                <p class="stockable_input-text" style="position:relative; top:55px; font-size:0.7em; text-align:center; line-height:1em;">Click to add an image</p>
+	        <div class="stockable_input-placeholder" style="width:100%; height:100%; background:url(../plugins/vmcustom/stockablecustomfields/assets/images/image-placeholder.png) no-repeat center 10% #fff">
+                <input name="derived_product_img['.$row.']" onchange="jQuery(\'#stockable_input-wrapper_'.$row.'\').css(\'display\',\'block\'); jQuery(\'#stockable_input-info_'.$row.'\').html(jQuery(this).attr(\'value\').split(\'/\').pop());" style="position:absolute; z-index:5; width:90px; height:100px; margin:0; padding:0; cursor: pointer;  opacity:0" type="file" />
+                <p class="stockable_input-text" style="position:relative; top:60%; font-size:0.7rem; text-align:center; line-height:1rem;">Click to add an image</p>
                 <div id="stockable_input-wrapper_'.$row.'" style="display:none; text-align:center; background:#ffffff; padding:20px 0px; position:relative; top:-15px; border:1px solid #cccccc;">
                     <span id="stockable_input-info_'.$row.'" style=""></span>
                 </div>
