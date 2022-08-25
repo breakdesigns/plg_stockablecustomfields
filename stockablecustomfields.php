@@ -520,9 +520,9 @@ JS;
     {
         $html='
 	        <div class="stockable_input-placeholder" style="width:100%; height:100%; background:url(../plugins/vmcustom/stockablecustomfields/assets/images/image-placeholder.png) no-repeat center 10% #fff">
-                <input name="derived_product_img['.$row.']" onchange="jQuery(\'#stockable_input-wrapper_'.$row.'\').css(\'display\',\'block\'); jQuery(\'#stockable_input-info_'.$row.'\').html(jQuery(this).attr(\'value\').split(\'/\').pop());" style="position:absolute; z-index:5; width:90px; height:100px; margin:0; padding:0; cursor: pointer;  opacity:0" type="file" />
+                <input name="derived_product_img['.$row.']" onchange="jQuery(\'#stockable_input-wrapper_'.$row.'\').css(\'display\',\'block\'); jQuery(\'#stockable_input-info_'.$row.'\').html(jQuery(this).val().split(\'/\').pop());" style="position:absolute; z-index:5; width:90px; height:100px; margin:0; padding:0; cursor: pointer;  opacity:0" type="file" />
                 <p class="stockable_input-text" style="position:relative; top:60%; font-size:0.7rem; text-align:center; line-height:1rem;">Click to add an image</p>
-                <div id="stockable_input-wrapper_'.$row.'" style="display:none; text-align:center; background:#ffffff; padding:20px 0px; position:relative; top:-15px; border:1px solid #cccccc;">
+                <div id="stockable_input-wrapper_'.$row.'" style="display:none; text-align:center; background:#ffffff; padding:10px 0px; position:relative; top:-10px; border:1px solid #cccccc; font-size:0.7rem;">
                     <span id="stockable_input-info_'.$row.'" style=""></span>
                 </div>
             </div>';
