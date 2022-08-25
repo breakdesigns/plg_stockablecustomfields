@@ -5,7 +5,7 @@ if (typeof Stockablecustomfields === "undefined") {
     var Stockablecustomfields = {
 
         handleForms: function (forms) {
-            var i = 0;
+            let i = 0;
             var StockableObj = [];
             forms.each(function () {
                 const form = jQuery(this);
@@ -111,54 +111,54 @@ if (typeof Stockablecustomfields === "undefined") {
         }
     },
 
-    /**
-     * Disable the out of stock combinations (if it should)
-     * @returns
-     */
-    Stockable.prototype.handleOutOfStock = function () {
-        var combinations = this.combinations;
-        var stockArea = this.stockArea;
+        /**
+         * Disable the out of stock combinations (if it should)
+         * @returns
+         */
+        Stockable.prototype.handleOutOfStock = function () {
+            var combinations = this.combinations;
+            var stockArea = this.stockArea;
 
-        if (typeof this.stockable_out_of_stock_display != "undefined" && this.stockable_out_of_stock_display != 'enabled') {
-            var outStockCombination = [];
-            //copy by value //js copies variables by reference
-            var tempCombinations = combinations.slice();
+            if (typeof this.stockable_out_of_stock_display != "undefined" && this.stockable_out_of_stock_display != 'enabled') {
+                var outStockCombination = [];
+                //copy by value //js copies variables by reference
+                var tempCombinations = combinations.slice();
 
 
-            //find the out of stock combinations
-            jQuery.each(combinations, function (index1, combination) {
-                if (parseInt(combination.stock) <= 0) {
-                    jQuery.each(combination.customfield_ids, function (index2, customfield_id) {
-                        outStockCombination.push(customfield_id);
-                    });
-                }
-            });
-            //copy by value //js copies variables by reference
-            var tempOutStockCombination = outStockCombination.slice();
-
-            /*
-             * check again the out of stock custom fields ids versus the other combinations
-             * Maybe a custom field id used in other combinations and has stock
-             */
-            jQuery.each(tempCombinations, function (index1, combination) {
-                if (parseInt(combination.stock) > 0) {
-                    jQuery.each(combination.customfield_ids, function (index2, customfield_id) {
-                        jQuery.each(outStockCombination, function (index3, customfield_id2) {
-                            if (customfield_id == customfield_id2) tempOutStockCombination.splice(tempOutStockCombination.indexOf(customfield_id2), 1);
+                //find the out of stock combinations
+                jQuery.each(combinations, function (index1, combination) {
+                    if (parseInt(combination.stock) <= 0) {
+                        jQuery.each(combination.customfield_ids, function (index2, customfield_id) {
+                            outStockCombination.push(customfield_id);
                         });
-                    });
-                }
+                    }
+                });
+                //copy by value //js copies variables by reference
+                var tempOutStockCombination = outStockCombination.slice();
 
-            });
+                /*
+                 * check again the out of stock custom fields ids versus the other combinations
+                 * Maybe a custom field id used in other combinations and has stock
+                 */
+                jQuery.each(tempCombinations, function (index1, combination) {
+                    if (parseInt(combination.stock) > 0) {
+                        jQuery.each(combination.customfield_ids, function (index2, customfield_id) {
+                            jQuery.each(outStockCombination, function (index3, customfield_id2) {
+                                if (customfield_id == customfield_id2) tempOutStockCombination.splice(tempOutStockCombination.indexOf(customfield_id2), 1);
+                            });
+                        });
+                    }
 
-            //Time to disable the out of stock custom field ids
-            jQuery.each(tempOutStockCombination, function (index1, customfield_id) {
-                var element = jQuery(stockArea).find("[value='" + customfield_id + "']");
-                jQuery(element).attr('disabled', 'disabled');
-            });
+                });
 
-        }
-    };
+                //Time to disable the out of stock custom field ids
+                jQuery.each(tempOutStockCombination, function (index1, customfield_id) {
+                    var element = jQuery(stockArea).find("[value='" + customfield_id + "']");
+                    jQuery(element).attr('disabled', 'disabled');
+                });
+
+            }
+        };
     /**
      * Used both for the stockable custom fields in Virtuemart, in Prod. Builder and the Product Bundles
      */
@@ -172,11 +172,11 @@ if (typeof Stockablecustomfields === "undefined") {
         var nomatch = false;
         var combinations = this.combinations;
 
-        for (num_index = 0; num_index < customs_grouped.length; num_index++) {
-            custom = customs_grouped[num_index];
+        for (let num_index = 0; num_index < customs_grouped.length; num_index++) {
+            let custom = customs_grouped[num_index];
 
             //false used when no selection exists (e.g. In radio btns)
-            value = custom.value;
+            let value = custom.value;
             if (!value || value == "0") {
                 emptyCustoms[num_index] = this;
 
@@ -197,7 +197,7 @@ if (typeof Stockablecustomfields === "undefined") {
             }
 
             //store the combination found in current check
-            var matchedCombinations = [];
+            let matchedCombinations = [];
 
             jQuery.each(curCombinations, function (index2, combinationObj) {
                 // found
@@ -256,7 +256,7 @@ if (typeof Stockablecustomfields === "undefined") {
                     if (!jQuery(input).attr('disabled')) {
                         enabled.push(input);
                     }
-                    if (jQuery(input).attr('checked')) {
+                    if (jQuery(input).prop('checked')) {
                         checked = true;
                     }
                 });
@@ -265,8 +265,8 @@ if (typeof Stockablecustomfields === "undefined") {
         //only 1 enabled. Select it
         if (enabled.length && checked == false) {
             let inp = enabled.shift();
-            if (!jQuery(inp).attr('checked')) {
-                jQuery(inp).attr('checked', 'checked');
+            if (!jQuery(inp).prop('checked')) {
+                jQuery(inp).prop('checked', true);
                 return true;
             }
         }
@@ -285,7 +285,8 @@ if (typeof Stockablecustomfields === "undefined") {
             const name = jQuery(this).attr('name');
             let options = [];
             //remove the brackets in case of array variables
-            name_filtered = name.replace(/[\[\]]/g, '');
+            const name_filtered = name.replace(/[\[\]]/g, '');
+            let customObj = {};
 
             //the selects have values
             if (jQuery(this).is('select')) {
@@ -304,7 +305,7 @@ if (typeof Stockablecustomfields === "undefined") {
             //we have to check one by one the inputs to find the selected value
             else if (jQuery(this).is('input')) {
 
-                if (typeof obj[name_filtered] == 'undefined' && !jQuery(this).attr('checked')) {
+                if (typeof obj[name_filtered] == 'undefined' && !jQuery(this).prop('checked')) {
                     options = jQuery(stockArea).find('input[name="' + name + '"]');
                     customObj = {
                         options: options,
@@ -313,7 +314,7 @@ if (typeof Stockablecustomfields === "undefined") {
                         type: 'input',
                         name: name_filtered
                     };
-                } else if (jQuery(this).attr('checked')) {
+                } else if (jQuery(this).prop('checked')) {
                     options = jQuery(stockArea).find('input[name="' + name + '"]');
                     customObj = {
                         options: options,
@@ -324,7 +325,9 @@ if (typeof Stockablecustomfields === "undefined") {
                     };
                 }
             }
-            obj[name_filtered] = customObj;
+            if(customObj && customObj.options) {
+                obj[name_filtered] = customObj;
+            }
         });
         //convert to array
         jQuery.each(obj, function (index, ob) {
@@ -373,8 +376,8 @@ if (typeof Stockablecustomfields === "undefined") {
 
             //if disabled and selected, remove selection
             if (customs[i].type == 'input') {
-                if (customs[i].selected_option !== false && (jQuery(customs[i].selected_option).attr('checked') == 'checked' || jQuery(customs[i].selected_option).attr('checked') == true) && (jQuery(customs[i].selected_option).attr('disabled') == 'disabled' || jQuery(customs[i].selected_option).attr('disabled') == true)) {
-                    jQuery(customs[i].selected_option).removeAttr('checked');
+                if (customs[i].selected_option !== false && (jQuery(customs[i].selected_option).prop('checked')) && (jQuery(customs[i].selected_option).attr('disabled') == 'disabled' || jQuery(customs[i].selected_option).attr('disabled') == true)) {
+                    jQuery(customs[i].selected_option).prop('checked', false);
                 }
             } else if (customs[i].type == 'select') {
                 const select = jQuery(customs[i].selected_option);
@@ -396,7 +399,7 @@ if (typeof Stockablecustomfields === "undefined") {
             jQuery.each(custom.options, function (x, option) {
                 if (currentCombination.customfield_ids[index] == jQuery(option).val()) {
                     if (custom.type == 'input') {
-                        jQuery(option).attr('checked', true);
+                        jQuery(option).prop('checked', true);
                     } else if (custom.type == 'select') {
                         jQuery(option).attr('selected', 'selected');
                         const value = jQuery(option).val();
