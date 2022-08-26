@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension type="plugin" group="vmcustom" method="upgrade">
 	<name>Stockable Customfields</name>
-	<creationDate>2022-08-11</creationDate>
+	<creationDate>2022-08-26</creationDate>
 	<author>breadkesigns</author>
 	<authorEmail>info@breakdesigns.net</authorEmail>
 	<authorUrl>http://www.breakdesigns.net</authorUrl>
 	<copyright>Copyright(c) 2015-2022 breakdesigns.net</copyright>
 	<license>GNU/GPL v.2</license>
-	<version>1.6.0beta1</version>
-	<description><![CDATA[<h3>Stockables Customfields<i style="font-size:12px"> (v.1.6.0beta1 | 11 August 2022)</i></h3>
+	<version>1.6.0</version>
+	<description><![CDATA[<h3>Stockables Customfields<i style="font-size:12px"> (v.1.6.0 | 26 August 2022)</i></h3>
     <span><img src="../plugins/vmcustom/stockablecustomfields/assets/images/logo_stockables.png"/></span>
     <p style="margin-top:5px; font-size:12px; font-weight:0;">Create stockable variations using custom fields</p>
     <p><a href="https://breakdesigns.net/extensions/joomla/stockable-custom-fields/documentation" target="_blank">Please check our Manual to see how to proceed further</a>
@@ -56,27 +56,27 @@
 	<vmconfig>
 		<fields name="params">
 			<fieldset name="basic"
-				addfieldpath="/plugins/vmcustom/stockablecustomfields/fields">
+					  addfieldpath="/plugins/vmcustom/stockablecustomfields/fields">
 
 				<field name="parentOrderable" type="radio"
-					label="PLG_STOCKABLECUSTOMFIELDS_PARENT_PRODUCT_ORDERABLE_LABEL"
-					description="PLG_STOCKABLECUSTOMFIELDS_PARENT_PRODUCT_ORDERABLE_DESC"
-					default="0">
+					   label="PLG_STOCKABLECUSTOMFIELDS_PARENT_PRODUCT_ORDERABLE_LABEL"
+					   description="PLG_STOCKABLECUSTOMFIELDS_PARENT_PRODUCT_ORDERABLE_DESC"
+					   default="0">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
 
 				<field name="outofstockcombinations" type="radio"
-					label="PLG_STOCKABLECUSTOMFIELDS_OUT_OF_STOCK_DISPLAY_LABEL"
-					description="PLG_STOCKABLECUSTOMFIELDS_OUT_OF_STOCK_DISPLAY_DESC"
-					default="enabled">
+					   label="PLG_STOCKABLECUSTOMFIELDS_OUT_OF_STOCK_DISPLAY_LABEL"
+					   description="PLG_STOCKABLECUSTOMFIELDS_OUT_OF_STOCK_DISPLAY_DESC"
+					   default="enabled">
 					<option value="enabled">PLG_STOCKABLECUSTOMFIELD_ENABLED</option>
 					<option value="disabled">PLG_STOCKABLECUSTOMFIELD_DISABLED</option>
 					<option value="hidden">PLG_STOCKABLECUSTOMFIELD_HIDDEN</option>
 				</field>
 
 				<field type="customs" name="custom_id"
-					label="PLG_STOCKABLECUSTOMFIELDS_CUSTOMS_LABEL" description="PLG_STOCKABLECUSTOMFIELDS_CUSTOMS_DESC" />
+					   label="PLG_STOCKABLECUSTOMFIELDS_CUSTOMS_LABEL" description="PLG_STOCKABLECUSTOMFIELDS_CUSTOMS_DESC" />
 
 
 			</fieldset>
