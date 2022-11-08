@@ -406,22 +406,23 @@ Class CustomfieldStockablecustomfield
         return true;
     }
 
-
-	/**
-	 * Check and return orderable products (have stock etc based on the VM config)
-	 *
-	 * @param 	array $product_ids
-	 *
-	 * @return	array the the product objects or the product ids
-	 * @since	1.0
-	 */
-	public static function getOrderableProducts($product_ids, $custom_params, $exclude=false)
+    /**
+     * Check and return orderable products (have stock etc based on the VM config)
+     *
+     * @param   array  $product_ids
+     * @param   array  $custom_params
+     * @param   int    $exclude
+     *
+     * @return array|mixed
+     * @since 1.0.0
+     */
+	public static function getOrderableProducts($product_ids, $custom_params, $exclude = 0)
 	{
         $product_ids = ArrayHelper::toInteger($product_ids);
 
         // get the default language to get the product name
         $defaultLanguageTag = self::getDefaultLangTag();
-        $currentLanguage = Factory::getLanguage()->getTag();
+        $currentLanguage = Factory::getApplication()->getLanguage()->getTag();
         $vmLanguages = \VmConfig::get('active_languages', array(
             $defaultLanguageTag
         ));
