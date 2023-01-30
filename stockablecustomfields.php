@@ -560,6 +560,9 @@ JS;
      */
     public function plgVmOnStoreProduct($data, $plugin_param, $old_customfield_ids = [], $key = -1)
     {
+        if(!isset($plugin_param) || !is_array($plugin_param)) {
+            return false;
+        }
         $plugin_name = key($plugin_param);
         $result = false;
         if ($plugin_name != 'stockablecustomfields') {
