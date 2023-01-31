@@ -12,6 +12,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Toolbar\Button\PopupButton;
+use Joomla\CMS\Toolbar\Toolbar;
 
 if(!class_exists('CustomfieldStockablecustomfield')) {
     require_once(JPATH_PLUGINS.DIRECTORY_SEPARATOR.'vmcustom'.DIRECTORY_SEPARATOR.'stockablecustomfields'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'customfield.php');
@@ -90,9 +91,15 @@ class JFormFieldCustoms extends JFormField{
 
 		//if there are assignments cannot change the custom fields
 		if(empty($isAssignedToProduct)){
-
 		    $popupButton = new PopupButton();
-            $popupButtonHtml = $popupButton->fetchButton('Modal', 'plus', 'PLG_STOCKABLECUSTOMFIELDS_ADD_CUSTOMS_LABEL', 'index.php?option=com_virtuemart&view=custom&layout=stockables&tmpl=component&function=jSelectCustom' , '820', '550');
+
+		    // We need to set a parent toolbar in J4. Otherwise we get an error.
+		    if(method_exists($popupButton, 'setParent')) {
+                $bar = Toolbar::getInstance('stockable_toolbar');
+                $popupButton->setParent($bar);
+            }
+
+            $popupButtonHtml = $popupButton->fetchButton('Modal', 'plus', 'PLG_STOCKABLECUSTOMFIELDS_ADD_CUSTOMS_LABEL', 'index.php?option=com_virtuemart&view=custom&layout=stockables&tmpl=component&function=jSelectCustom' , '875', '550');
 
 			$html.='
 			<div class="elements_toolbar">' . $popupButtonHtml .'</div>';
