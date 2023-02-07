@@ -428,9 +428,9 @@ JS;
                          }                        
                         
                         // BS3
-                        let modalWindowBtn = document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\');
+                        let modalWindowBtn'.$modal_id.' = document.querySelector(\'[data-target="#modal-' . $modal_id .'"]\');
                         // BS5
-                        modalWindowBtn = modalWindowBtn ? modalWindowBtn : document.querySelector(\'[data-bs-target="#modal-' . $modal_id .'"]\');
+                        modalWindowBtn = modalWindowBtn'.$modal_id.' ? modalWindowBtn'.$modal_id.' : document.querySelector(\'[data-bs-target="#modal-' . $modal_id .'"]\');
                         
     					// Load existing
     				    modalWindowBtn.addEventListener("click", function(e){
