@@ -440,9 +440,8 @@ if (typeof Stockablecustomfields === "undefined") {
             }
         }
     };
-
-    addEventListener('DOMContentLoaded', (event) => {
-        jQuery.noConflict();
-        Stockablecustomfields.setEvents();
-    });
 }
+addEventListener('DOMContentLoaded', (event) => {
+    jQuery.noConflict();
+    Stockablecustomfields.setEvents();
+});
