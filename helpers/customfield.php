@@ -153,7 +153,7 @@ Class CustomfieldStockablecustomfield
                 return false;
             }
             $custom_param_array = explode('|', $custom_params);
-            $params_array = array();
+            $params_array = [];
             foreach ($custom_param_array as $var) {
                 $values = explode('=', $var);
 
@@ -310,7 +310,7 @@ Class CustomfieldStockablecustomfield
 
             foreach ($customsfields as $custom_id => $customfield) {
                 $custom = self::getCustom($custom_id);
-                $data = array();
+                $data = [];
                 $data['virtuemart_product_id'] = $product_id;
                 $data['virtuemart_custom_id'] = $custom_id;
                 $data['disabler'] = isset($customfield['disabler']) ? $customfield['disabler'] : 0;
@@ -500,8 +500,8 @@ Class CustomfieldStockablecustomfield
 	 */
 	public static function filterUniqueValues($objects,$filter_key='value')
 	{
-		$new_array=array();
-		$value_array=array();
+		$new_array=[];
+		$value_array=[];
 		foreach ($objects as $key=>$ob) {
 			if(in_array($ob->$filter_key, $value_array)){
 				unset($objects[$key]);
@@ -527,9 +527,9 @@ Class CustomfieldStockablecustomfield
      */
     public static function getProductCombinations($customfields, $product_array)
     {
-        $products = array();
-        $products_final = array();
-        $custom_values = array();
+        $products = [];
+        $products_final = [];
+        $custom_values = [];
 
         foreach ($customfields as $cf) {
             /**
@@ -539,7 +539,7 @@ Class CustomfieldStockablecustomfield
              * Since we can display the value only once in the FE (e.g. color:white) we are using the the 1st found customfield_id for that value
              */
             if (!isset($custom_values[$cf->virtuemart_custom_id])) {
-                $custom_values[$cf->virtuemart_custom_id] = array();
+                $custom_values[$cf->virtuemart_custom_id] = [];
             }
             if (!in_array($cf->value, $custom_values[$cf->virtuemart_custom_id])) {
                 $custom_values[$cf->virtuemart_custom_id][$cf->id] = $cf->value;
@@ -548,7 +548,7 @@ Class CustomfieldStockablecustomfield
                 $id = (string)array_search($cf->value, $custom_values[$cf->virtuemart_custom_id]);
             }
             if (!isset($products[$cf->virtuemart_product_id])) {
-                $products[$cf->virtuemart_product_id] = array();
+                $products[$cf->virtuemart_product_id] = [];
             }
             if (!in_array($cf->id, $products[$cf->virtuemart_product_id])) {
                 $products[$cf->virtuemart_product_id][] = $id;
