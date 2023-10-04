@@ -43,11 +43,16 @@ class JFormFieldCustoms extends FormField
             return '<div class="alert alert-info"><span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_SAVE_CUSTOMFIELD_BEFORE_ADDING_CUSTOMS') . '</span></div';
         }
 
+		Text::script('PLG_STOCKABLECUSTOMFIELDS_FIELD_SELECTABLE');
+
+		$customfield = CustomfieldStockablecustomfield::getInstance($virtuemart_custom_id);
+		$custom_params = $customfield->getCustomfieldParams();
+
         $document = Factory::getDocument();
         $document->addStyleSheet(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/css/stockables_be.css');
         $document->addStyleSheet(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/css/mybootstrap.css');
         $document->addScript(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/js/backend.js');
-        $selectedElements = array();
+        $selectedElements = [];
 
 
         if (!empty($this->value)) {
@@ -59,6 +64,10 @@ class JFormFieldCustoms extends FormField
 		<div id="elements_wrapper">
 			<div class="elements_header" style="display:'.$display.'">
 				<span class="element_name">'.Text::_('COM_VIRTUEMART_CUSTOM_TITLE').'</span>
+				<span class="element_selectable">'.
+					Text::_('PLG_STOCKABLECUSTOMFIELDS_FIELD_SELECTABLE_LABEL').'
+					<span class="icon-info-circle" aria-hidden="true" title="' . Text::_('PLG_STOCKABLECUSTOMFIELDS_FIELD_SELECTABLE_DESC') . '" data-bs-toggle="tooltip"></span>
+				</span>
 				<span class="element_type">'.Text::_('COM_VIRTUEMART_CUSTOM_FIELD_TYPE').'</span>
 				<span class="element_id">'.Text::_('COM_VIRTUEMART_ID').'</span>
 			</div>';
@@ -69,11 +78,17 @@ class JFormFieldCustoms extends FormField
 		if(!empty($selectedElements) && is_array($selectedElements)){
             $isAssignedToProduct = CustomfieldStockablecustomfield::getCustomfields($product = false, $virtuemart_custom_id, $limit = 1, 'disabler', '=', 0);
             foreach ($selectedElements as $el) {
+				// When the selectable param is not saved, we are in an upgrade from an old version. Treat all as selectable by default in that case.
+				$selectableChecked = !isset($custom_params['selectable']) || in_array($el, $custom_params['selectable']) ? 'checked' : '';
                 //get the custom
                 $customObject = CustomfieldStockablecustomfield::getCustom($el);
                 $html .= '
 				<li cclass="bd_element" id="element_' . $el . '">
 					<span class="element_name">' . Text::_($customObject->custom_title) . '</span>
+					<span class="element_selectable">
+					<input id="selectable_' .  $el .'" type="checkbox" name="selectable[]" value="' . $el . '" '. $selectableChecked .'/>
+					<label for="selectable_' .  $el .'">' .  Text::_('PLG_STOCKABLECUSTOMFIELDS_FIELD_SELECTABLE'). '</label>
+					</span>
 					<span class="element_type">' . Text::_(CustomfieldStockablecustomfield::getCustomTypeName($customObject->field_type)) . '</span>
 					<span class="element_id">' . $el . '</span>
 					<input type="hidden" name="custom_id[]" value="' . $el . '"/>

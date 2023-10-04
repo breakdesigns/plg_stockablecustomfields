@@ -52,6 +52,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
         $varsToPush = array(
             'parentOrderable' => array(0, 'int'),
             'custom_id' => array('', 'array'),
+            'selectable' => array('', 'array'),
             'outofstockcombinations' => array('enabled', 'string'),
             'child_product_id' => array(0, 'int'),
         );
@@ -101,6 +102,11 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
      */
     public function plgVmOnStoreInstallPluginTable($psType,$data)
     {
+		// We cannot have all the sub-custom fields as non-selectable.
+		if (!empty($data['custom_id']) && empty($data['selectable'])) {
+			Factory::getApplication()->enqueueMessage(Text::_('PLG_STOCKABLECUSTOMFIELDS_AT_LEAST_ONE_SELECTABLE_CUSTOM_FIELD_NEEDED'), 'warning');
+			return false;
+		}
         \vmdebug('data:',$data);
     }
 
@@ -173,7 +179,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
             $html .= '<h4>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_VARIATION') . '</h4>';
 
             //get the markup that prints the variations
-            $html .= $this->getVariationMarkup($row, $custom_ids, $derived_product);
+            $html .= $this->getVariationMarkup($row, $custom_params, $derived_product);
             $html .= '<input type="hidden" value="' . $row . '" name="' . $this->_product_paramName . '[' . $row . '][row]"/>';
             $html .= '<input type="hidden" id="derived_product_id' . $row . '" value="' . $derived_product_id . '" name="' . $this->_product_paramName . '[' . $row . '][child_product_id]" />';
 
@@ -282,26 +288,31 @@ JS;
      * Generates and return the markup related with the variation
      *
      * @param int $row
-     * @param array $custom_ids
+     * @param array $custom_params
      * @param mixed $derived_product
      * @return string
      * @throws Exception
      * @since  1.4.1
      */
-    public function getVariationMarkup($row, $custom_ids, $derived_product)
+    public function getVariationMarkup($row, $custom_params, $derived_product)
     {
+	    $custom_ids = $custom_params['custom_id'];
         $html = '<table class="table">';
         $i = 0;
         foreach ($custom_ids as $custom_id) {
             $subcustomfield = false;
             $custom = CustomfieldStockablecustomfield::getCustom($custom_id);
+			$isSelectable = !isset($custom_params['selectable']) || in_array($custom_id, $custom_params['selectable']) ? true : false;
+
             if (!empty($derived_product->virtuemart_product_id)) {
                 //get the other fields
                 $subcustomfields = CustomfieldStockablecustomfield::getCustomfields($derived_product->virtuemart_product_id, $custom_id, $limit = false, 'disabler', '=', 0);
                 $subcustomfield = reset($subcustomfields);
+	            $subcustomfield->isSelectable = $isSelectable;
             } else {
                 $subcustomfield = $custom;
                 $subcustomfield->virtuemart_customfield_id = 0;
+	            $subcustomfield->isSelectable = $isSelectable;
             }
             $html .= '<tr>';
             $html .= '<td><label for="' . $row . '_' . $custom_id . '" class="">' . Text::_($custom->custom_title) . '</label></td>';
