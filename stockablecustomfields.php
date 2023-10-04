@@ -736,16 +736,16 @@ JS;
         $data['virtuemart_product_id'] = 0;
 
         //reset custom fields
-        $data['field'] = array();
+        $data['field'] = [];
 
         //reset child products- we do not want the child product to have children
-        $data['childs'] = array();
+        $data['childs'] = [];
 
         //reset medias
         $data['active_media_id'] = '';
-        $data['virtuemart_media_id'] = array();
+        $data['virtuemart_media_id'] = [];
         $data['media_published'] = 0;
-        $data['mediaordering'] = array();
+        $data['mediaordering'] = [];
         $data['file_url'] = '';
         $data['file_title'] = '';
         $data['file_url_thumb'] = '';
@@ -772,9 +772,9 @@ JS;
         if (!empty($data['mprices']['override'])) {
             unset($data['mprices']['override']);
         }
-        $data['mprices']['product_price'] = array();
+        $data['mprices']['product_price'] = [];
         $data['mprices']['product_price'][0] = '';
-        $data['mprices']['virtuemart_product_price_id'] = array();
+        $data['mprices']['virtuemart_product_price_id'] = [];
         $data['mprices']['virtuemart_product_price_id'][0] = 0;
 
         if (!empty($plugin_param['cost_price'])) {
@@ -785,8 +785,8 @@ JS;
          * unset categories and manufacturers
          * If child products have categories they are displayed in the category pages
          */
-        $data['virtuemart_manufacturer_id'] = array();
-        $data['categories'] = array();
+        $data['virtuemart_manufacturer_id'] = [];
+        $data['categories'] = [];
 
         //call the products model to create a child product
         if (!class_exists('VirtueMartModelProduct')) {
@@ -1016,7 +1016,7 @@ JS;
         static $printed_inbundle = false;
         static $pb_group_id = '';
 
-        $stockable_customfields = array();
+        $stockable_customfields = [];
         $custom_id = $group->virtuemart_custom_id;
         $customfield = CustomfieldStockablecustomfield::getInstance($custom_id);
         $custom_params = $customfield->getCustomfieldParams();
@@ -1027,8 +1027,11 @@ JS;
         }
 
         $group->customParams = $custom_params;
-        //the customs that consists the stockable
-        $custom_ids = !empty($custom_params['custom_id']) ? $custom_params['custom_id'] : array();
+        /*
+         * The customs that consists the stockable
+         * This should work also for upgrades before the introduction of the selectable CFs
+         */
+        $custom_ids = isset($custom_params['selectable']) ? (!empty($custom_params['selectable']) ? $custom_params['selectable'] : []) : (!empty($custom_params['custom_id']) ? $custom_params['custom_id'] : []);
         $layout = 'default';
 
         // this is the parent
@@ -1071,7 +1074,7 @@ JS;
              * when we visit the parent product we want that combination there.
              * But disabled by the script
              */
-            $derived_products = \CustomfieldStockablecustomfield::getOrderableProducts($derived_product_ids, $custom_params, $exclude = $parent_derived);
+            $derived_products = \CustomfieldStockablecustomfield::getOrderableProducts($derived_product_ids, $custom_params, $parent_derived);
             $derived_product_ids = array_keys($derived_products);
         }
 
@@ -1092,8 +1095,8 @@ JS;
                 $html .= '<div class="customfield_wrapper" id="customfield_wrapper_' . $cust_id . '">';
                 if ($custom->field_type != 'E') {
                     //get it from the built in function
-                    $stockable_customfields_tmp = CustomfieldStockablecustomfield::getCustomfields($derived_product_ids, $cust_id, $limit = false, 'disabler', '=', 0);;
-                    $stockable_customfields_display = array();
+                    $stockable_customfields_tmp = CustomfieldStockablecustomfield::getCustomfields($derived_product_ids, $cust_id, false, 'disabler', '=', 0);;
+                    $stockable_customfields_display = [];
                     if (!empty($stockable_customfields_tmp)) {
                         //filter to remove duplicates
                         $stockable_customfields_display = CustomfieldStockablecustomfield::filterUniqueValues($stockable_customfields_tmp);
@@ -1107,7 +1110,7 @@ JS;
                 } //call plugin for the output
                 else {
                     //the customfields
-                    $customfields = array();
+                    $customfields = [];
                     //the html output
                     $output = '';
                     PluginHelper::importPlugin('vmcustom');
@@ -1145,7 +1148,7 @@ JS;
                 $script .= 'stockableCustomFieldsProductUrl:\'' . json_encode($childproduct_urls) . '\',';
                 $script .= 'stockable_out_of_stock_display:\'' . $custom_params['outofstockcombinations'] . '\',';
                 $finalScript = "
-				    if(typeof StockableObjects=='undefined')StockableObjects=new Array();
+				    if(typeof StockableObjects=='undefined')StockableObjects= [];
 				    StockableObjects[" . $product_parent_id . "]={" . $script . "};";
                 $html .= '<script>' . $finalScript . '</script>';
 
