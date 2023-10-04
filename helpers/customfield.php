@@ -81,7 +81,7 @@ Class CustomfieldStockablecustomfield
     {
         $db = Factory::getDbo();
         $q = $db->getQuery(true);
-        $q->select('*')->from('#__virtuemart_customs ')->where('virtuemart_custom_id=' . (int)$custom_id);
+        $q->select('*')->from('#__virtuemart_customs')->where('virtuemart_custom_id=' . (int)$custom_id);
         $db->setQuery($q);
         $result = $db->loadObject();
         return $result;
