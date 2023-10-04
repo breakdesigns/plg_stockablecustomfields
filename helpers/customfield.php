@@ -97,7 +97,7 @@ Class CustomfieldStockablecustomfield
      */
     static function getCustomTypeName($key_type)
     {
-        $types = array(
+        $types = [
             'S' => 'COM_VIRTUEMART_CUSTOM_STRING',
             'C' => 'COM_VIRTUEMART_CHILDVARIANT',
             'D' => 'COM_VIRTUEMART_DATE',
@@ -111,7 +111,7 @@ Class CustomfieldStockablecustomfield
             'E' => 'COM_VIRTUEMART_CUSTOM_EXTENSION',
             'R' => 'COM_VIRTUEMART_RELATED_PRODUCTS',
             'Z' => 'COM_VIRTUEMART_RELATED_CATEGORIES'
-        );
+        ];
         if (isset($types[$key_type])) {
             return $types[$key_type];
         } else {
