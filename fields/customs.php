@@ -8,6 +8,7 @@
 
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
@@ -22,7 +23,8 @@ if(!class_exists('CustomfieldStockablecustomfield')) {
  *
  * Class that generates a filter list
  */
-class JFormFieldCustoms extends JFormField{
+class JFormFieldCustoms extends FormField
+{
 	/**
 	 * Method to get the field input markup.
 	 *
