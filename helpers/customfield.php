@@ -212,7 +212,7 @@ Class CustomfieldStockablecustomfield
      * @param string $fieldName
      * @param string $operator
      * @param string $fieldValue
-     * @return bool|mixed
+     * @return \stdClass[]|false
      * @since 1.0
      */
     public static function getCustomfields($product_id = 0, $custom_id = 0, $limit = false, $fieldName = '', $operator = '=', $fieldValue ='')
