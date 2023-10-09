@@ -308,7 +308,9 @@ JS;
                 //get the other fields
                 $subcustomfields = CustomfieldStockablecustomfield::getCustomfields($derived_product->virtuemart_product_id, $custom_id, $limit = false, 'disabler', '=', 0);
                 $subcustomfield = reset($subcustomfields);
-	            $subcustomfield->isSelectable = $isSelectable;
+                if ($subcustomfield) {
+                    $subcustomfield->isSelectable = $isSelectable;
+                }
             } else {
                 $subcustomfield = $custom;
                 $subcustomfield->virtuemart_customfield_id = 0;
