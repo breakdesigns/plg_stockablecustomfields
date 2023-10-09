@@ -10,7 +10,7 @@ function jSelectElement(field1,field2,id){
 			'<span class="element_name">'+field1+'</span>' +
 			'<span className="element_selectable">' +
 			'<input id="selectable_'+id+'" type="checkbox" name="selectable[]" value="'+id+'" checked/>'+
-			'<label htmlFor="selectable_'+id+'">' +  Joomla.Text._('PLG_STOCKABLECUSTOMFIELDS_FIELD_SELECTABLE') + '</label>' +
+			'<label for="selectable_'+id+'">' +  Joomla.Text._('PLG_STOCKABLECUSTOMFIELDS_FIELD_SELECTABLE') + '</label>' +
 			'</span>' +
 			'<span class="element_type">'+field2+'</span>' +
 			'<span class="element_id">'+id+'</span>' +
