@@ -134,7 +134,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
         if (empty($product_id)) {
             $retValue = '
 <div style="clear:both;" class="alert alert-info">
-<span class="icon-info"></span>
+<span class="icon-info-circle m-1"></span>
 <span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_PLEASE_SAVE_PRODUCT') . '</span>
 </div>';
             return false;
@@ -145,7 +145,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
         if ($product->product_parent_id > 0) {
             $retValue = '
 <div style="clear:both;" class="alert alert-info">
-<span class="icon-info"></span>
+<span class="icon-info-circle m-1"></span>
 <span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_PLUGIN_ASSIGNED') . '</span>
 </div>';
             return false;
@@ -189,7 +189,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
                 //if the parent product is orderable, it can be variant as well
                 if ($field->child_product_id == $product_id) {
                     $parent_derived = true;
-                    $html .= '<div style="clear:both;" class="alert alert-info"><span class="icon-info"></span><span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_USE_PARENT') . '</span></div>';
+                    $html .= '<div style="clear:both;" class="alert alert-info"><span class="icon-info-circle m-1"></span><span>' . Text::_('PLG_STOCKABLECUSTOMFIELDS_USE_PARENT') . '</span></div>';
                     $html .= '<script>parent_derived=true;</script>';
                 } else {
                     //set price display
