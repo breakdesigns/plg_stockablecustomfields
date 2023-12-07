@@ -212,7 +212,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
                 if($custom_params['parentOrderable']){
                     $html.='
 					<div class="controls" id="parent_derived_wrapper'.$row.'">
-					   <input type="checkbox" id="use_parent_'.$row.'" onclick="if(jQuery(this).attr(\'checked\')==\'checked\' && (typeof parent_derived==\'undefined\' || parent_derived==false)){jQuery(\'#derived_product_wrapper_'.$row.'\').hide(); parent_derived=true;} else{jQuery(\'#derived_product_wrapper_'.$row.'\').show(); parent_derived=false;}"
+					   <input type="checkbox" id="use_parent_'.$row.'" onclick="if(jQuery(this).is(\':checked\') && (typeof parent_derived==\'undefined\' || parent_derived==false)){jQuery(\'#derived_product_wrapper_'.$row.'\').hide(); parent_derived=true;} else{jQuery(\'#derived_product_wrapper_'.$row.'\').show(); parent_derived=false;}"
 					   name="'.$this->_product_paramName.'['.$row.'][parent_product_as_derived]" value="1"/>
 					   <label for="use_parent_'.$row.'">'.Text::_('PLG_STOCKABLECUSTOMFIELDS_USE_PARENT').'</label>
 					</div>';
