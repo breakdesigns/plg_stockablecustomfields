@@ -137,7 +137,7 @@ Class CustomfieldStockablecustomfield
      * Get the params of a plugin with a given id
      *
      * @param int $custom_id
-     * @return array
+     * @return array|bool
      * @since 1.0
      */
     public function getCustomfieldParams($custom_id = 0)
@@ -362,7 +362,7 @@ Class CustomfieldStockablecustomfield
                     // return false;
                 } else {
                     $virtuemart_customfield_ids[$custom_id] = $data['virtuemart_customfield_id'];
-                    \vmdebug('Stockables - Custom Value:' . $custom_id . ':' . $customfield['value'] . ' Saved to Product:' . $product_id);
+                    \vmdebug('Stockables - Custom Value:' . $custom_id . ':' . $customfield['value'] ?? '' . ' Saved to Product:' . $product_id);
                 }
                 if (! empty($tableCustomfields)) {
                     unset($tableCustomfields);
@@ -522,7 +522,7 @@ Class CustomfieldStockablecustomfield
      *
      * @param array $customfields
      * @param array $product_array An associative array with the products, using as key the product id
-     * @return    array
+     * @return stdClass
      * @since    1.0
      */
     public static function getProductCombinations($customfields, $product_array)
@@ -569,7 +569,7 @@ Class CustomfieldStockablecustomfield
      * Get the shop's default language
      *
      * @param string $lang
-     * @return Language
+     * @return string
      * @since 1.5.1
      */
     public static function getDefaultLangTag($lang = null)
