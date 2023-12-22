@@ -607,7 +607,7 @@ JS;
             $virtuemart_customfield_ids = \CustomfieldStockablecustomfield::getCustomfields($product_id, $cid = 0,
                 $limit = 50, 'disabler', '=', 0);
 
-            //We need the numerical index of the customfield to find it's order. The $row is not reliable for that as it does not decrease when we delete a custom field
+            //We need the numerical index of the customfield to find its order. The $row is not reliable for that as it does not decrease when we delete a custom field
             $index = array_search($row, array_keys($data['field']));
 
             if ($virtuemart_customfield_ids[$index]->virtuemart_custom_id == $custom_id) {
@@ -684,7 +684,7 @@ JS;
                 //check if an image was uploaded
                 $input = Factory::getApplication()->input;
                 $files = $input->files->get('derived_product_img');
-                $file = $files[$row];
+                $file = $files[$row] ?? '';
                 if (!empty($file) && !empty($file['name'])) {
                     $this->_createMediaFile($file, $derived_product_id);
                 }
@@ -1052,6 +1052,16 @@ JS;
          * VM will call that function 1st for the generation of the product, setting the printed var to true
          */
         if ($printed == $context . $product->virtuemart_product_id && $input->get('option') != 'com_productbuilder') {
+            $lastCustomFieldOfProduct = $this->getProductLastStockable($product);
+            /*
+             * The same product maybe called and constructed again and again in a page.
+             * E.g. Once in a category and once in the products module.
+             * If it's the last stockable custom field, reset the $printed, so that can be re-created.
+             * Otherwise when the last set product is the same as the one passed here, it has no stockables.
+             */
+            if ($lastCustomFieldOfProduct && $group->virtuemart_customfield_id === $lastCustomFieldOfProduct->virtuemart_customfield_id) {
+                $printed = false;
+            }
             return false;
         }
         $printed = $context . $product->virtuemart_product_id;
@@ -1200,6 +1210,28 @@ JS;
         }
 
         return $product_urls;
+    }
+
+    /**
+     * Find the last stockable of a product
+     *
+     * @param $product
+     * @return false|\stdClass
+     */
+    protected function getProductLastStockable($product)
+    {
+        if(!isset($product->customfields) || !is_array($product->customfields)) {
+            return false;
+        }
+
+        $customFields = array_reverse($product->customfields);
+        foreach ($customFields as $customField) {
+            if ($this->isStockable($customField->virtuemart_custom_id))  {
+                return $customField;
+            }
+        }
+
+        return false;
     }
 
     /**
