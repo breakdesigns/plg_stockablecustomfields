@@ -998,10 +998,6 @@ JS;
         $group->show_title = false;
         $input = Factory::getApplication()->input;
         $html = '';
-
-        if ($input->get('option') != 'com_virtuemart' && $input->get('option') != 'com_customfilters' && $input->get('option') != 'com_productbuilder') {
-            return false;
-        }
         $product->orderable = false;
 
         // can be added to cart only in product details and category
