@@ -384,8 +384,18 @@ if (typeof Stockablecustomfields === "undefined") {
                 let selected = jQuery(select).find('option:selected');
                 if ((selected != false && jQuery(selected).attr('disabled') == 'disabled' || jQuery(selected).attr('disabled') == true) && StockabklesStart == false) {
                     jQuery(selected).removeAttr('selected');
-                    //when we remove selected, the browser sets the selection to an enabled option. Hence we need reupdate
+                    /*
+                    when we remove selected, the browser sets the selection to an enabled option.
+                    But this happens only when an non-disabled option exists prior/before the existing.
+                    If the prior options are all disabled, it will not work.
+                    Hence, we need re-update
+                     */
                     reupdate = true;
+                    let selected2 = jQuery(select).find('option:selected');
+                    // We have no selection
+                    if (selected2 == selected) {
+                        reupdate = false;
+                    }
                 }
             }
         }
