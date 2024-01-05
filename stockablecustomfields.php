@@ -998,14 +998,7 @@ JS;
         $group->show_title = false;
         $input = Factory::getApplication()->input;
         $html = '';
-        $product->orderable = false;
-
-        // can be added to cart only in product details and category
-        if (
-            ($input->get('option') == 'com_virtuemart' && ($input->get('view') == 'productdetails' || $input->get('view') == 'category')) ||
-            ($input->get('option') == 'com_customfilters' && $input->get('view') == 'products')) {
-            $product->orderable = true;
-        }
+        $product->orderable = true;
 
         $context = $input->get('option') . $input->get('view') . $input->get('view') . $input->get('bundled_products', false);
 
@@ -1159,6 +1152,10 @@ JS;
 				    if(typeof StockableObjects=='undefined')StockableObjects= [];
 				    StockableObjects[" . $product_parent_id . "]={" . $script . "};";
                 $html .= '<script>' . $finalScript . '</script>';
+
+                if (\VmConfig::get ('jdynupdate', true)) {
+                    \vmJsApi::jDynUpdate();
+                }
 
                 Factory::getDocument()->addScript(Uri::root(true) . '/plugins/vmcustom/stockablecustomfields/assets/js/stockables_fe.js');
                 // We need to load that. Otherwise we get js errors coming from the Virtuemart.updateContent fn
