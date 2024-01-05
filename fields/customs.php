@@ -2,7 +2,7 @@
 /**
  * @package stockablecustomfields
  * @author Sakis Terzis (sakis@breakDesigns.net)
- * @copyright	Copyright (C) 2023 breakDesigns.net. All rights reserved
+ * @copyright	Copyright (C) 2024 breakDesigns.net. All rights reserved
  * @license	GNU/GPL v2
  */
 
