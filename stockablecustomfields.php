@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\ToolbarFactoryInterface;
 use Joomla\String\StringHelper;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Table\Table;
@@ -406,11 +407,13 @@ JS;
     {
         $loadProductsURL = 'index.php?option=com_virtuemart&view=product&custom_id=' . $field->virtuemart_custom_id . '&row=' . $row . '&product_id=' . $product->virtuemart_product_id . '&layout=simple2&tmpl=component&function=jSelectProduct&row=' . $row;
         $popupButton = new PopupButton();
+        $document = Factory::getApplication()->getDocument();
 
-        // We need to set a parent toolbar in J4. Otherwise we get an error.
+        // We need to set a parent toolbar in J4. Otherwise, we get an error.
         if(method_exists($popupButton, 'setParent')) {
-            $bar = Toolbar::getInstance('stockable_toolbar');
+            $bar = Factory::getContainer()->get(ToolbarFactoryInterface::class)->createToolbar('stockable_toolbar');
             $popupButton->setParent($bar);
+
         }
 
         $modal_id = 'productsModal' . $row;
