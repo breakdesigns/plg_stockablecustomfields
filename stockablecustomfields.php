@@ -681,8 +681,7 @@ JS;
                             'custom_id' => $sub_custom_id
                         ];
                     }
-                    \CustomfieldStockablecustomfield::storeCustomFields($derived_product_id, $childCustomData, true,
-                        true);
+                    \CustomfieldStockablecustomfield::storeCustomFields($derived_product_id, $childCustomData, true, true);
                 }
 
                 //check if an image was uploaded
