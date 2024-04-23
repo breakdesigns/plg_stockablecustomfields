@@ -12,12 +12,11 @@
 // Check to ensure this file is included in Joomla!
 defined( '_JEXEC' ) or die;
 
-use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Filesystem\Folder;
-use Joomla\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Load the installer
@@ -204,7 +203,7 @@ class plgVmCustomStockablecustomfieldsInstallerScript {
 	 */
 	private function recurse_copy($src,$dst,$last=false )
     {
-        $dst_exist = is_dir(Path::clean($dst));
+        $dst_exist = Folder::exists($dst);
         if (!$dst_exist) {
             $dst_exist = Folder::create($dst);
         }
