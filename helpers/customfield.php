@@ -329,7 +329,8 @@ Class CustomfieldStockablecustomfield
 
                     if ($custom->field_type != 'E' || $only_product_customfield_record) {
                         // same customfield same value. Do nothing
-                        if ($dbCustomfields[0]->customfield_value == $customfield['value'] && $fieldValue == $dbCustomfields[0]->$fieldName) {
+                        if (empty($dbCustomfields[0]->customfield_value) && !isset($customfield['value']) ||
+                            ($dbCustomfields[0]->customfield_value == $customfield['value'] && $fieldValue == $dbCustomfields[0]->$fieldName)) {
                             $result = true;
                         }
                         // same customfield different value. Update
@@ -358,7 +359,7 @@ Class CustomfieldStockablecustomfield
                 }
 
                 if (! $result) {
-                    \vmdebug('Stockables - Custom id:' . $custom_id . ':' . $customfield['value'] . ' Not Saved to Product:', $product_id);
+                    \vmdebug('Stockables - Custom id:' . $custom_id . ':' . isset($customfield['value']) ? $customfield['value'] : ' ' . ' Not Saved to Product:', $product_id);
                     // return false;
                 } else {
                     $virtuemart_customfield_ids[$custom_id] = $data['virtuemart_customfield_id'];
