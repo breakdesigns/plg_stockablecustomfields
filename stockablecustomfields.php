@@ -799,6 +799,10 @@ JS;
         }
         $productModel = new \VirtueMartModelProduct();
         $productTable = $productModel->getTable('products');
+        $productTable->reset();
+        if (method_exists($productTable, 'emptyCache')) {
+            $productTable->emptyCache();
+        }
 
         //set a new slug
         $productTable->checkCreateUnique('#__virtuemart_products_' . \VmConfig::$vmlang, 'slug');
