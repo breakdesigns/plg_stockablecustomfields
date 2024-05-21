@@ -648,22 +648,21 @@ JS;
 
         // we have child product. Let's give it custom fields or update the existing
         if (!empty($derived_product_id)) {
+            //store the custom fields to the child product
+            $customfield_ids = \CustomfieldStockablecustomfield::storeCustomFields($derived_product_id,
+                $plugin_param['stockablecustomfields']);
+            self::$parentProductCustomfieldId = empty(self::$parentProductCustomfieldId) && $derived_product_id == $product_id ? $customfield_ids : self::$parentProductCustomfieldId;
+
+            // Do this, after the storage. Otherwise, it can mess things. @see https://breakdesigns.net/support/tickets/stockable-custom-fields/Ticket/10233-administrator-fields-add-mesh-product-view
             if ($is_new) {
                 // update the customfield params of the master product. Set the child id as param
                 $customfield = new \stdClass();
                 $customfield->virtuemart_customfield_id = $virtuemart_customfield_id;
                 $customfield->customfield_params = 'custom_id=""|child_product_id="' . $derived_product_id . '"|';
 
-                $upated = \CustomfieldStockablecustomfield::updateCustomfield($customfield, 'customfield_params');
-                \vmdebug('Stockables - Master Product\'s custom field\'s ' . $virtuemart_customfield_id . '  params update status:',
-                    $upated);
+                $updated = \CustomfieldStockablecustomfield::updateCustomfield($customfield, 'customfield_params');
+                \vmdebug('Stockables - Master Product\'s custom field\'s ' . $virtuemart_customfield_id . '  params update status:', $updated);
             }
-
-            //store the custom fields to the child product
-            $customfield_ids = \CustomfieldStockablecustomfield::storeCustomFields($derived_product_id,
-                $plugin_param['stockablecustomfields']);
-            self::$parentProductCustomfieldId = empty(self::$parentProductCustomfieldId) && $derived_product_id == $product_id ? $customfield_ids : self::$parentProductCustomfieldId;
-
 
             // Success
             if (count($customfield_ids) > 0) {
@@ -681,7 +680,7 @@ JS;
                             'custom_id' => $sub_custom_id
                         ];
                     }
-                    \CustomfieldStockablecustomfield::storeCustomFields($derived_product_id, $childCustomData, true, true);
+                    \CustomfieldStockablecustomfield::storeCustomFields($derived_product_id, $childCustomData, true,true);
                 }
 
                 //check if an image was uploaded
@@ -800,6 +799,10 @@ JS;
         }
         $productModel = new \VirtueMartModelProduct();
         $productTable = $productModel->getTable('products');
+        $productTable->reset();
+        if (method_exists($productTable, 'emptyCache')) {
+            $productTable->emptyCache();
+        }
 
         //set a new slug
         $productTable->checkCreateUnique('#__virtuemart_products_' . \VmConfig::$vmlang, 'slug');
