@@ -724,6 +724,7 @@ JS;
      * @return  boolean|int The new created product id
      * @since   1.0
      * @author  Sakis Terz
+     * @todo consider using  VM's ProductModel::createChild();
      */
     protected function createChildProduct($data, $plugin_param)
     {
