@@ -627,7 +627,7 @@ JS;
         //it is a new product as derived
         if (empty($derived_product_id)) {
             //if we use the parent product as derived, no need to create child products
-            if ($plugin_param['parent_product_as_derived']) {
+            if (!empty($plugin_param['parent_product_as_derived'])) {
                 $derived_product_id = $product_id;
             } else {
                 $derived_product_id = $this->createChildProduct($data, $plugin_param);
@@ -731,14 +731,19 @@ JS;
         if ($data['product_parent_id'] > 0) {
             return false;
         }
-        \vmdebug('STOCKABLE Parent id ', $data['virtuemart_product_id']);
+        \vmdebug('Create STOCKABLE from Parent id ', $data['virtuemart_product_id']);
+        $parentProductId = (int)$data['virtuemart_product_id'];
+        $new_product_id = 0;
 
         //is child
         $data['isChild'] = true;
 
         //set the parent product and reset the product id
-        $data['product_parent_id'] = (int)$data['virtuemart_product_id'];
+        $data['product_parent_id'] = $parentProductId;
         $data['virtuemart_product_id'] = 0;
+        // Leave the description empty, so that can be inherited from the parent and follow changes.
+        $data['product_s_desc'] = '';
+        $data['product_desc'] = '';
 
         //reset custom fields
         $data['field'] = [];
@@ -807,7 +812,32 @@ JS;
         //set a new slug
         $productTable->checkCreateUnique('#__virtuemart_products_' . \VmConfig::$vmlang, 'slug');
         $data['slug'] = $productTable->slug;
-        $new_product_id = $productModel->store($data);
+        if($productTable->bindChecknStore($data)) {
+            $new_product_id = $productTable->virtuemart_product_id;
+        }
+        $VMActiveLanguages = VmConfig::get('active_languages', array(VmConfig::$jDefLangTag));
+        if ($new_product_id && $VMActiveLanguages){
+            foreach($VMActiveLanguages as $lang){
+                // Default lang go on
+                if($lang == VmConfig::$vmlangTag) {
+                    continue;
+                }
+                $productTable->reset();
+                $productTable->emptyCache();
+                $productTable->setLanguage($lang);
+                //Disables the language fallback
+                $productTable->_ltmp = true;
+                $productTable->load($parentProductId);
+
+                if($productTable->_loaded and !$productTable->_loadedWithLangFallback){
+                    $productTable->virtuemart_product_id = $new_product_id;
+                    $productTable->checkCreateUnique('#__virtuemart_products_' . strtolower(strtr($lang,'-','_')),'slug');
+                    $productTable->product_s_desc = '';
+                    $productTable->product_desc= '';
+                    $productTable->bindChecknStore($productTable, false, true);
+                }
+            }
+        }
 
         return $new_product_id;
     }
