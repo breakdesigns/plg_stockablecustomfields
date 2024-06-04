@@ -363,7 +363,7 @@ Class CustomfieldStockablecustomfield
                     // return false;
                 } else {
                     $virtuemart_customfield_ids[$custom_id] = $data['virtuemart_customfield_id'];
-                    \vmdebug('Stockables - Custom Value:' . $custom_id . ':' . $customfield['value'] ?? '' . ' Saved to Product:' . $product_id);
+                    \vmdebug('Stockables - Custom Value:' . $custom_id . ':' . ($customfield['value'] ?? '') . ' Saved to Product:' . $product_id);
                 }
                 if (! empty($tableCustomfields)) {
                     unset($tableCustomfields);
