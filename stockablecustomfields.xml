@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension type="plugin" group="vmcustom" method="upgrade">
 	<name>Stockable Customfields</name>
-	<creationDate>2024-04-23</creationDate>
+	<creationDate>2024-06-04</creationDate>
 	<author>breadkesigns</author>
 	<authorEmail>info@breakdesigns.net</authorEmail>
 	<authorUrl>http://www.breakdesigns.net</authorUrl>
 	<copyright>Copyright(c) 2015-2024 breakdesigns.net</copyright>
 	<license>GNU/GPL v.2</license>
-	<version>1.7.1</version>
-	<description><![CDATA[<h3>Stockables Customfields<i style="font-size:12px"> (v.1.7.1 | 23 April 2024)</i></h3>
+	<version>1.7.2beta1</version>
+	<description><![CDATA[<h3>Stockables Customfields<i style="font-size:12px"> (v.1.7.2beta1 | 04 June 2024)</i></h3>
     <span><img src="../plugins/vmcustom/stockablecustomfields/assets/images/logo_stockables.png"/></span>
     <p style="margin-top:5px; font-size:12px; font-weight:0;">Create stockable variations using custom fields</p>
     <p><a href="https://breakdesigns.net/extensions/joomla/stockable-custom-fields/documentation" target="_blank">Please check our Manual to see how to proceed further</a>
