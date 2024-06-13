@@ -18,7 +18,7 @@ use Joomla\CMS\Plugin\PluginHelper;
  * @since 1.0
  *
  */
-Class CustomfieldStockablecustomfield
+class CustomfieldStockablecustomfield
 {
     /**
      * @var int

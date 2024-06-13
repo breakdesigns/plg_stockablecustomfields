@@ -65,6 +65,7 @@ class plgVmCustomStockablecustomfields extends vmCustomPlugin
             define('VM_VERSION', '3.0');
         }
         $this->setConfigParameterable('customfield_params', $varsToPush);
+        $this->languageHelper = LanguageStockable::getInstance();
         $this->_product_paramName = 'customfield_params';
     }
 
@@ -408,7 +409,6 @@ JS;
     {
         $loadProductsURL = 'index.php?option=com_virtuemart&view=product&custom_id=' . $field->virtuemart_custom_id . '&row=' . $row . '&product_id=' . $product->virtuemart_product_id . '&layout=simple2&tmpl=component&function=jSelectProduct&row=' . $row;
         $popupButton = new PopupButton();
-        $document = Factory::getApplication()->getDocument();
 
         // We need to set a parent toolbar in J4. Otherwise, we get an error.
         if(method_exists($popupButton, 'setParent')) {
@@ -427,6 +427,10 @@ JS;
         $popupButtonHtml = str_replace('icon-' . $modal_id, 'icon-briefcase', $popupButtonHtml);
         // Replace the btn-success class
         $popupButtonHtml = str_replace('btn-primary', 'btn-outline-secondary', $popupButtonHtml);
+
+        $VMActiveLanguages = VmConfig::get('active_languages', array(VmConfig::$jDefLangTag));
+        $isMultiLingual = count($VMActiveLanguages) > 1;
+        $currentLangIcon = $this->languageHelper->getFlagImagePath(VmConfig::$defaultLangTag);
 
         $html = '
                 <div id="derived_product_wrapper_' . $row . '">
@@ -504,7 +508,31 @@ JS;
                 				</thead>
                 				<tbody>
                     				<tr id="derived_product_new'.$row.'">
-                        				<td><input type="text" value="'.$product->product_name.'" name="'.$this->_product_paramName.'['.$row.'][product_name]"/></td>
+                        				<td>
+                        				<div>';
+                                        $nameNameField = $this->_product_paramName.'['.$row.'][product_name]';
+                                        if ($isMultiLingual && $currentLangIcon) {
+                                            $html.='<span class=""><img src="' . $currentLangIcon . '" alt=" ' . VmConfig::$defaultLangTag . '"></span>';
+                                            $nameNameField = $this->_product_paramName.'['.$row.'][' . VmConfig::$defaultLangTag . '][product_name]';
+                                        }
+                                        $html.='
+                        				<input type="text" value="'.$product->product_name.'" name="'. $nameNameField .'"/>';
+                                        if ($isMultiLingual) {
+                                            foreach ($VMActiveLanguages as $VmLanguage) {
+                                                // Current lang go on
+                                                if ($VmLanguage == VmConfig::$defaultLangTag) {
+                                                    continue;
+                                                }
+                                                $html .= '
+                                                <div class="mt-1">
+                                                    <span class=""><img src="' . $this->languageHelper->getFlagImagePath($VmLanguage) . '" alt=" ' . $VmLanguage . '"></span>
+                                                    <input type="text" value="'.$product->product_name.'" name="'.$this->_product_paramName.'['.$row.'][' . $VmLanguage . '][product_name]"/>
+                                                </div>';
+
+                                            }
+                                        }
+
+                                        $html .='</div></td>
                         				<td><input type="text" value="'.$product->product_sku.'" name="'.$this->_product_paramName.'['.$row.'][product_sku]"/></td>
                         				<td><input type="text" value="'.$product->product_in_stock.'" name="'.$this->_product_paramName.'['.$row.'][product_in_stock]"/></td>
                         				<td><input type="text" value="" name="'.$this->_product_paramName.'['.$row.'][cost_price]"/></td>
@@ -762,9 +790,16 @@ JS;
         $data['upload'] = '';
         $data['media_action'] = 0;
 
-        if (!empty($plugin_param['product_name'])) {
+        $VMActiveLanguages = VmConfig::get('active_languages', array(VmConfig::$jDefLangTag));
+
+        // Check if multilingual
+        if (count($VMActiveLanguages) > 1 && !empty($plugin_param[VmConfig::$defaultLangTag]['product_name'])) {
+            $data['product_name'] = $plugin_param[VmConfig::$defaultLangTag]['product_name'];
+        }
+        elseif (!empty($plugin_param['product_name'])) {
             $data['product_name'] = $plugin_param['product_name'];
         }
+
         if (!empty($plugin_param['product_sku'])) {
             $data['product_sku'] = $plugin_param['product_sku'];
         }
@@ -815,13 +850,14 @@ JS;
         if($productTable->bindChecknStore($data)) {
             $new_product_id = $productTable->virtuemart_product_id;
         }
-        $VMActiveLanguages = VmConfig::get('active_languages', array(VmConfig::$jDefLangTag));
+
         if ($new_product_id && $VMActiveLanguages){
             foreach($VMActiveLanguages as $lang){
-                // Default lang go on
-                if($lang == VmConfig::$vmlangTag) {
+                // Current lang go on
+                if ($lang == VmConfig::$vmlangTag) {
                     continue;
                 }
+
                 $productTable->reset();
                 $productTable->emptyCache();
                 $productTable->setLanguage($lang);
@@ -831,6 +867,10 @@ JS;
 
                 if($productTable->_loaded and !$productTable->_loadedWithLangFallback){
                     $productTable->virtuemart_product_id = $new_product_id;
+                    if (!empty($plugin_param[$lang]['product_name'])) {
+                        $productTable->product_name = $plugin_param[$lang]['product_name'];
+                    }
+
                     $productTable->checkCreateUnique('#__virtuemart_products_' . strtolower(strtr($lang,'-','_')),'slug');
                     $productTable->product_s_desc = '';
                     $productTable->product_desc= '';
