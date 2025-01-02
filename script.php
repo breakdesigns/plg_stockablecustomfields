@@ -31,7 +31,13 @@ use Joomla\CMS\Filesystem\File;
  */
 class plgVmCustomStockablecustomfieldsInstallerScript {
 
-	/**
+    /**
+     * @var array
+     * @since 1.0.0
+     */
+    protected array $printed_messages = [];
+
+    /**
 	 * Installation routine
 	 *
 	 * @copyright
