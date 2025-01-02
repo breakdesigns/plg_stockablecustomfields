@@ -1,7 +1,7 @@
 <?php
 /**
  * @package stockablecustomfield
- * @copyright Copyright (C) 2014-2024 breakdesigns.net . All rights reserved.
+ * @copyright Copyright (C) 2014-2025 breakdesigns.net . All rights reserved.
  * @license GNU General Public License version 2 or later; see LICENSE.txt
  */
 
