@@ -93,7 +93,7 @@ class JFormFieldCustoms extends FormField
 					<span class="element_id">' . $el . '</span>
 					<input type="hidden" name="custom_id[]" value="' . $el . '"/>
 					<span class="bd_listtoolbar">
-						<span class="breakdesigns_btn element_move_btn" title="Drag to Move"><i class="bdicon-move"></i></span>';
+						<span class="btn btn-outline-primary element_move_btn" title="Drag to Move"><i class="bdicon-move"></i></span>';
                 //if there are assignments cannot change the custom fields
                 if (empty($isAssignedToProduct)) {
                     $html .= '<span class="breakdesigns_btn element_delete_btn" title="Remove"><i class="bdicon-cancel"></i></span>';
@@ -116,7 +116,7 @@ class JFormFieldCustoms extends FormField
                 $popupButton->setParent($bar);
             }
 
-            $popupButtonHtml = $popupButton->fetchButton('Modal', 'plus', 'PLG_STOCKABLECUSTOMFIELDS_ADD_CUSTOMS_LABEL', 'index.php?option=com_virtuemart&view=custom&layout=stockables&tmpl=component&function=jSelectCustom' , '875', '550');
+            $popupButtonHtml = $popupButton->fetchButton('Modal', 'plus', 'PLG_STOCKABLECUSTOMFIELDS_ADD_CUSTOM_LABEL', 'index.php?option=com_virtuemart&view=custom&layout=stockables&tmpl=component&function=jSelectCustom' , '875', '550');
 
 			$html.='
 			<div class="elements_toolbar">' . $popupButtonHtml .'</div>';
