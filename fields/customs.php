@@ -96,7 +96,7 @@ class JFormFieldCustoms extends FormField
 						<span class="btn btn-outline-primary element_move_btn" title="Drag to Move"><i class="bdicon-move"></i></span>';
                 //if there are assignments cannot change the custom fields
                 if (empty($isAssignedToProduct)) {
-                    $html .= '<span class="breakdesigns_btn element_delete_btn" title="Remove"><i class="bdicon-cancel"></i></span>';
+                    $html .= '<span class="btn-outline-primary element_delete_btn" title="Remove"><i class="bdicon-cancel"></i></span>';
                 }
                 $html .= '
 					</span>
