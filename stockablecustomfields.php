@@ -516,7 +516,7 @@ JS;
                                             $nameNameField = $this->_product_paramName.'['.$row.'][' . VmConfig::$defaultLangTag . '][product_name]';
                                         }
                                         $html.='
-                        				<input type="text" value="'.$product->product_name.'" name="'. $nameNameField .'"/>';
+                        				<input type="text" value="'.$product->product_name.'" name="'. $nameNameField .'" style="max-width:95%;"/>';
                                         if ($isMultiLingual) {
                                             foreach ($VMActiveLanguages as $VmLanguage) {
                                                 // Current lang go on
